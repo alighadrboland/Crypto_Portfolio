@@ -55,16 +55,16 @@
   <script>
     // List your cryptos, their symbols, and the amount you own
     var cryptos = [
-      { name: "Bitcoin", symbol: "BTC", amount: 0.1 },
-      { name: "Ethereum", symbol: "ETH", amount: 2 },
-      { name: "Dogecoin", symbol: "DOGE", amount: 5000 }
+      { name: "Bitcoin", symbol: "BTC", amount: 0.1346303 },
+      { name: "Ethereum", symbol: "ETH", amount: 0.3754664 },
+      { name: "Filecoin", symbol: "FIL", amount: 8.2325135 }
     ];
 
     // Fetch prices and exchange rates
     async function fetchData() {
       try {
         // API for crypto prices
-        var cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,dogecoin&vs_currencies=usd";
+        var cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,filecoin&vs_currencies=usd";
         var cryptoResponse = await fetch(cryptoApiUrl);
         var cryptoData = await cryptoResponse.json();
 
@@ -78,7 +78,7 @@
         var prices = {
           BTC: cryptoData.bitcoin.usd,
           ETH: cryptoData.ethereum.usd,
-          DOGE: cryptoData.dogecoin.usd
+          FIL: cryptoData.dogecoin.usd
         };
 
         // Calculate total portfolio value
