@@ -121,16 +121,17 @@
             totalValueUsd += parseFloat(totalCryptoValueUsd);
             totalValueToman += parseInt(totalCryptoValueToman);
 
-            // Format Toman with commas
+            // Format Toman and USD with commas
             var formattedPriceToman = parseInt(priceToman).toLocaleString("en-US");
             var formattedTotalCryptoValueToman = parseInt(totalCryptoValueToman).toLocaleString("en-US");
+            var formattedTotalCryptoValueUsd = parseFloat(totalCryptoValueUsd).toLocaleString("en-US", { minimumFractionDigits: 2 });
 
             return (
               '<div class="crypto">' +
               "<h2>" + crypto.name + "</h2>" +
-              "<div class='price'>Price: $" + priceUsd.toFixed(2) + " / " + formattedPriceToman + " Toman</div>" +
+              "<div class='price'>Price: $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + " / " + formattedPriceToman + " Toman</div>" +
               "<div class='amount'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
-              "<div class='value'>Total Value: $" + totalCryptoValueUsd + " / " + formattedTotalCryptoValueToman + " Toman</div>" +
+              "<div class='value'>Total Value: $" + formattedTotalCryptoValueUsd + " / " + formattedTotalCryptoValueToman + " Toman</div>" +
               "</div>"
             );
           })
@@ -139,8 +140,9 @@
         // Display total portfolio value
         var totalValueElement = document.getElementById("total-value");
         var formattedTotalValueToman = totalValueToman.toLocaleString("en-US");
+        var formattedTotalValueUsd = totalValueUsd.toLocaleString("en-US", { minimumFractionDigits: 2 });
         totalValueElement.innerHTML =
-          "Total Portfolio Value: $" + totalValueUsd.toFixed(2) + " / " + formattedTotalValueToman + " Toman";
+          "Total Portfolio Value: $" + formattedTotalValueUsd + " / " + formattedTotalValueToman + " Toman";
       } catch (error) {
         console.error("Error fetching data:", error);
         document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
