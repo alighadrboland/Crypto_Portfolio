@@ -54,7 +54,7 @@
     }
     button {
       margin-top: 20px; /* Added extra margin for button */
-      padding: 10px 20px;
+      padding: 10px 30px;
       font-size: 1em;
       color: white;
       background-color: #3498db;
@@ -64,6 +64,12 @@
     }
     button:hover {
       background-color: #2980b9;
+    }
+    .crypto img {
+      width: 30px;
+      height: 30px;
+      vertical-align: middle;
+      margin-right: 10px;
     }
   </style>
 </head>
@@ -92,16 +98,19 @@
     // Fetch prices and calculate portfolio
     async function fetchData() {
       try {
-        // Get the user-entered exchange rate
-        var exchangeRateInput = (document.getElementById("exchange-rate").value) * 10;
+        // Get the user-entered exchange rate and format it with commas
+        var exchangeRateInput = document.getElementById("exchange-rate").value;
         if (!exchangeRateInput || exchangeRateInput <= 0) {
           alert("Please enter a valid USD to IRR exchange rate.");
           return;
         }
-        var usdToIrr = parseFloat(exchangeRateInput);
+        var formattedExchangeRate = parseInt(exchangeRateInput).toLocaleString("en-US");
+        document.getElementById("exchange-rate").value = formattedExchangeRate; // Update the input with the formatted value
+        
+        var usdToIrr = parseFloat(exchangeRateInput) * 10;
         var usdToToman = usdToIrr / 10; // Convert IRR to Toman
 
-        // API for crypto prices
+        // API for crypto prices and logos
         var cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,filecoin&vs_currencies=usd";
         var cryptoResponse = await fetch(cryptoApiUrl);
         var cryptoData = await cryptoResponse.json();
@@ -113,7 +122,9 @@
         // Display crypto info
         var container = document.getElementById("crypto-container");
         container.innerHTML = cryptos
-          .map(function (crypto) {
+          .map(async function (crypto) {
+            // Fetch the logo for the cryptocurrency
+            var logoUrl = "https://cryptingup.com/media/cryptocurrencies/" + crypto.symbol.toLowerCase() + ".png";
             var priceUsd = cryptoData[crypto.apiId].usd; // Price in USD
             var priceToman = (priceUsd * usdToToman).toFixed(0); // Price in Toman
             var totalCryptoValueUsd = (priceUsd * crypto.amount).toFixed(2); // Total value in USD
@@ -130,7 +141,7 @@
 
             return (
               '<div class="crypto">' +
-              "<h2>" + crypto.name + " (" + crypto.symbol + ")</h2>" +
+              "<h2><img src='" + logoUrl + "' alt='" + crypto.name + "' />" + crypto.name + " (" + crypto.symbol + ")</h2>" +
               "<div class='price'>Price: $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + " / " + formattedPriceToman + " Toman</div>" +
               "<div class='amount'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
               "<div class='value'>Total Value: $" + formattedTotalCryptoValueUsd + " / " + formattedTotalCryptoValueToman + " Toman</div>" +
