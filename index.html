@@ -32,11 +32,9 @@
       border-radius: 5px;
       background: #fff;
       width: 300px;
-      text-align: left;
     }
     .crypto h2 {
       margin: 5px 0;
-      font-size: 1.3em;
     }
     .price, .value {
       font-size: 1.1em;
@@ -46,7 +44,7 @@
       color: #e74c3c;
     }
     .input-container {
-      margin-bottom: 40px;
+      margin-bottom: 20px;
     }
     input[type="number"] {
       padding: 10px;
@@ -54,8 +52,7 @@
       width: 200px;
     }
     button {
-      margin-top: 20px;
-      padding: 10px 30px;
+      padding: 20px 30px;
       font-size: 1em;
       color: white;
       background-color: #3498db;
@@ -66,15 +63,6 @@
     button:hover {
       background-color: #2980b9;
     }
-    .crypto img {
-      width: 30px;
-      height: 30px;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-    .row {
-      margin: 10px 0;
-    }
   </style>
 </head>
 <body>
@@ -82,7 +70,7 @@
 
   <div class="input-container">
     <label for="exchange-rate">Enter USDT Price:</label><br>
-    <input type="number" id="exchange-rate" placeholder="e.g., 50000" /><br>
+    <input type="number" id="exchange-rate" placeholder="" /><br>
     <button onclick="fetchData()">Calculate Portfolio</button>
   </div>
 
@@ -103,14 +91,12 @@
     async function fetchData() {
       try {
         // Get the user-entered exchange rate
-        var exchangeRateInput = document.getElementById("exchange-rate").value.replace(/,/g, '');
-        var exchangeRate = parseFloat(exchangeRateInput);
-        
-        if (!exchangeRate || exchangeRate <= 0) {
+        var exchangeRateInput = (document.getElementById("exchange-rate").value) * 10;
+        if (!exchangeRateInput || exchangeRateInput <= 0) {
           alert("Please enter a valid USD to IRR exchange rate.");
           return;
         }
-        var usdToIrr = exchangeRate * 10;
+        var usdToIrr = parseFloat(exchangeRateInput);
         var usdToToman = usdToIrr / 10; // Convert IRR to Toman
 
         // API for crypto prices
@@ -142,12 +128,11 @@
 
             return (
               '<div class="crypto">' +
-              "<h2><img src='https://cryptingup.com/media/cryptocurrencies/" + crypto.symbol.toLowerCase() + ".png' alt='" + crypto.name + "' />" + crypto.name + " (" + crypto.symbol + ")</h2>" +
-              '<div class="row"><strong>Price (USD):</strong> $' + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + '</div>' +
-              '<div class="row"><strong>Price (Toman):</strong> ' + formattedPriceToman + ' Toman</div>' +
-              '<div class="row"><strong>Total Value (USD):</strong> $' + formattedTotalCryptoValueUsd + '</div>' +
-              '<div class="row"><strong>Total Value (Toman):</strong> ' + formattedTotalCryptoValueToman + ' Toman</div>' +
-              '</div>'
+              "<h2>" + crypto.name + "</h2>" +
+              "<div class='price'>Price: $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + " / " + formattedPriceToman + " Toman</div>" +
+              "<div class='amount'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
+              "<div class='value'>Total Value: $" + formattedTotalCryptoValueUsd + " / " + formattedTotalCryptoValueToman + " Toman</div>" +
+              "</div>"
             );
           })
           .join("");
