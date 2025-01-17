@@ -91,7 +91,7 @@
     async function fetchData() {
       try {
         // Get the user-entered exchange rate
-        var exchangeRateInput = document.getElementById("exchange-rate").value;
+        var exchangeRateInput = (document.getElementById("exchange-rate").value) * 10;
         if (!exchangeRateInput || exchangeRateInput <= 0) {
           alert("Please enter a valid USD to IRR exchange rate.");
           return;
