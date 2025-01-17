@@ -15,6 +15,15 @@
     h1 {
       color: #333;
     }
+    .total-value {
+      margin: 20px 0;
+      padding: 15px;
+      font-size: 1.5em;
+      color: #2c3e50;
+      background: #ecf0f1;
+      border-radius: 8px;
+      display: inline-block;
+    }
     .crypto {
       display: inline-block;
       margin: 10px;
@@ -38,6 +47,9 @@
 </head>
 <body>
   <h1>My Crypto Portfolio</h1>
+  <div class="total-value" id="total-value">
+    Calculating total portfolio value...
+  </div>
   <div id="crypto-container"></div>
 
   <script>
@@ -69,27 +81,46 @@
           DOGE: cryptoData.dogecoin.usd
         };
 
+        // Calculate total portfolio value
+        var totalValueUsd = 0;
+        var totalValueIrr = 0;
+
         // Display crypto info
         var container = document.getElementById("crypto-container");
         container.innerHTML = cryptos
           .map(function (crypto) {
             var priceUsd = prices[crypto.symbol]; // Price in USD
             var priceIrr = (priceUsd * usdToIrr).toFixed(0); // Price in IRR
-            var totalValueUsd = (priceUsd * crypto.amount).toFixed(2); // Total value in USD
-            var totalValueIrr = (priceIrr * crypto.amount).toFixed(0); // Total value in IRR
+            var totalCryptoValueUsd = (priceUsd * crypto.amount).toFixed(2); // Total value in USD
+            var totalCryptoValueIrr = (priceIrr * crypto.amount).toFixed(0); // Total value in IRR
+
+            // Update total portfolio value
+            totalValueUsd += parseFloat(totalCryptoValueUsd);
+            totalValueIrr += parseInt(totalCryptoValueIrr);
+
+            // Format IRR with commas
+            var formattedPriceIrr = parseInt(priceIrr).toLocaleString("en-US");
+            var formattedTotalCryptoValueIrr = parseInt(totalCryptoValueIrr).toLocaleString("en-US");
 
             return (
               '<div class="crypto">' +
               "<h2>" + crypto.name + "</h2>" +
-              "<div class='price'>Price: $" + priceUsd.toFixed(2) + " / " + priceIrr + " IRR</div>" +
+              "<div class='price'>Price: $" + priceUsd.toFixed(2) + " / " + formattedPriceIrr + " IRR</div>" +
               "<div class='amount'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
-              "<div class='value'>Total Value: $" + totalValueUsd + " / " + totalValueIrr + " IRR</div>" +
+              "<div class='value'>Total Value: $" + totalCryptoValueUsd + " / " + formattedTotalCryptoValueIrr + " IRR</div>" +
               "</div>"
             );
           })
           .join("");
+
+        // Display total portfolio value
+        var totalValueElement = document.getElementById("total-value");
+        var formattedTotalValueIrr = totalValueIrr.toLocaleString("en-US");
+        totalValueElement.innerHTML =
+          "Total Portfolio Value: $" + totalValueUsd.toFixed(2) + " / " + formattedTotalValueIrr + " IRR";
       } catch (error) {
         console.error("Error fetching data:", error);
+        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
       }
     }
 
