@@ -126,8 +126,13 @@
             var totalCryptoValueToman = (priceToman * crypto.amount).toFixed(0);
 
             var priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
-            var priceColor = priceChange24h >= 0 ? "green" : "red";
-            var valueColor = priceChange24h >= 0 ? "green" : "red";
+            var price24hAgoUsd = priceUsd / (1 + priceChange24h / 100);
+            var profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
+            var profitLossToman = profitLossUsd * usdToToman;
+
+            // Determine color for profit/loss
+            var profitLossColor = profitLossUsd >= 0 ? "green" : "red";
+            var profitLossColorToman = profitLossToman >= 0 ? "green" : "red";
 
             totalValueUsd += parseFloat(totalCryptoValueUsd);
             totalValueToman += parseInt(totalCryptoValueToman);
@@ -135,16 +140,19 @@
             var formattedPriceToman = parseInt(priceToman).toLocaleString("en-US");
             var formattedTotalCryptoValueToman = parseInt(totalCryptoValueToman).toLocaleString("en-US");
             var formattedTotalCryptoValueUsd = parseFloat(totalCryptoValueUsd).toLocaleString("en-US", { minimumFractionDigits: 2 });
+            var formattedProfitLossUsd = profitLossUsd.toLocaleString("en-US", { minimumFractionDigits: 2 });
+            var formattedProfitLossToman = parseInt(profitLossToman).toLocaleString("en-US");
 
             return (
               '<div class="crypto">' +
               "<h2>" + crypto.name + "</h2>" +
-              "<div class='price' style='color:" + priceColor + "'>Price (USD): $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + "</div>" +
-              "<div class='price' style='color:" + priceColor + "'>Price (Toman): " + formattedPriceToman + " Toman</div>" +
-              "<div class='price' style='color:" + priceColor + "'>Price Change (24h): " + priceChange24h.toFixed(2) + "%</div>" +
-              "<div class='amount'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
-              "<div class='value' style='color:" + valueColor + "'>Total Value (USD): $" + formattedTotalCryptoValueUsd + "</div>" +
-              "<div class='value' style='color:" + valueColor + "'>Total Value (Toman): " + formattedTotalCryptoValueToman + " Toman</div>" +
+              "<div class='price' style='color: black;'>Price (USD): $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + "</div>" +
+              "<div class='price' style='color: black;'>Price (Toman): " + formattedPriceToman + " Toman</div>" +
+              "<div class='price' style='color: black;'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
+              "<div class='value' style='color:" + profitLossColor + "'>Profit/Loss (USD): $" + formattedProfitLossUsd + "</div>" +
+              "<div class='value' style='color:" + profitLossColorToman + "'>Profit/Loss (Toman): " + formattedProfitLossToman + " Toman</div>" +
+              "<div class='value' style='color:" + profitLossColor + "'>Total Value (USD): $" + formattedTotalCryptoValueUsd + "</div>" +
+              "<div class='value' style='color:" + profitLossColorToman + "'>Total Value (Toman): " + formattedTotalCryptoValueToman + " Toman</div>" +
               "</div>"
             );
           })
