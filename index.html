@@ -43,36 +43,65 @@
     .value {
       color: #e74c3c;
     }
+    .input-container {
+      margin-bottom: 20px;
+    }
+    input[type="number"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 200px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      color: white;
+      background-color: #3498db;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
   </style>
 </head>
 <body>
   <h1>My Crypto Portfolio</h1>
+
+  <div class="input-container">
+    <label for="exchange-rate">Enter USD to IRR Exchange Rate:</label><br>
+    <input type="number" id="exchange-rate" placeholder="e.g., 420000" /><br>
+    <button onclick="fetchData()">Calculate Portfolio</button>
+  </div>
+
   <div class="total-value" id="total-value">
-    Calculating total portfolio value...
+    Enter exchange rate to calculate portfolio value.
   </div>
   <div id="crypto-container"></div>
 
   <script>
     // List your cryptos, their symbols, and the amount you own
     var cryptos = [
-      { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.1346303 },
-      { name: "Ethereum", symbol: "ETH", apiId: "ethereum", amount: 0.3754664 },
-      { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.2325135 }
+      { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.1 },
+      { name: "Ethereum", symbol: "ETH", apiId: "ethereum", amount: 2 },
+      { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 50 }
     ];
 
-    // Fetch prices and exchange rates
+    // Fetch prices and calculate portfolio
     async function fetchData() {
       try {
+        // Get the user-entered exchange rate
+        var exchangeRateInput = document.getElementById("exchange-rate").value;
+        if (!exchangeRateInput || exchangeRateInput <= 0) {
+          alert("Please enter a valid USD to IRR exchange rate.");
+          return;
+        }
+        var usdToIrr = parseFloat(exchangeRateInput);
+
         // API for crypto prices
         var cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,filecoin&vs_currencies=usd";
         var cryptoResponse = await fetch(cryptoApiUrl);
         var cryptoData = await cryptoResponse.json();
-
-        // API for USD to IRR exchange rate
-        var exchangeRateApiUrl = "https://api.exchangerate-api.com/v4/latest/USD";
-        var exchangeRateResponse = await fetch(exchangeRateApiUrl);
-        var exchangeRateData = await exchangeRateResponse.json();
-        var usdToIrr = exchangeRateData.rates.IRR;
 
         // Calculate total portfolio value
         var totalValueUsd = 0;
@@ -116,9 +145,6 @@
         document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
       }
     }
-
-    fetchData();
-    setInterval(fetchData, 30000); // Refresh prices and rates every minute
   </script>
 </body>
 </html>
