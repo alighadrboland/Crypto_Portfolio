@@ -32,16 +32,17 @@
       border-radius: 5px;
       background: #fff;
       width: 300px;
+      text-align: left;
     }
     .crypto h2 {
       margin: 5px 0;
     }
     .price, .value {
       font-size: 1.1em;
-      color: #27ae60;
+      padding: 5px 0;
     }
-    .value {
-      color: #e74c3c;
+    .price {
+      font-size: 1.2em;
     }
     .input-container {
       margin-bottom: 20px;
@@ -59,7 +60,7 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      margin-top: 20px; /* Adjust the button position here */
+      margin-top: 20px; /* Adjusted button position */
     }
     button:hover {
       background-color: #2980b9;
@@ -71,7 +72,7 @@
 
   <div class="input-container">
     <label for="exchange-rate">Enter USDT Price:</label><br>
-    <input type="number" id="exchange-rate" placeholder="" /><br>
+    <input type="number" id="exchange-rate" placeholder="Enter USDT exchange rate" /><br>
     <button onclick="fetchData()">Calculate Portfolio</button>
   </div>
 
@@ -122,8 +123,8 @@
             var priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
 
             // Color logic based on 24h price change
-            var priceColor = priceChange24h >= 0 ? "#2c3e50" : "#e74c3c";  // Dark green for increase, dark red for decrease
-            var valueColor = priceChange24h >= 0 ? "#2c3e50" : "#e74c3c";  // Same logic for value
+            var priceColor = priceChange24h >= 0 ? "green" : "red";  // Green for increase, red for decrease
+            var valueColor = priceChange24h >= 0 ? "green" : "red";  // Same logic for value
 
             // Update total portfolio value
             totalValueUsd += parseFloat(totalCryptoValueUsd);
@@ -138,6 +139,7 @@
               '<div class="crypto">' +
               "<h2>" + crypto.name + "</h2>" +
               "<div class='price' style='color:" + priceColor + "'>Price: $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + " / " + formattedPriceToman + " Toman</div>" +
+              "<div class='price' style='color:" + priceColor + "'>Price Change (24h): " + priceChange24h.toFixed(2) + "%</div>" +
               "<div class='amount'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
               "<div class='value' style='color:" + valueColor + "'>Total Value: $" + formattedTotalCryptoValueUsd + " / " + formattedTotalCryptoValueToman + " Toman</div>" +
               "</div>"
