@@ -130,9 +130,10 @@
             var profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
             var profitLossToman = profitLossUsd * usdToToman;
 
-            // Determine color for profit/loss
+            // Determine color for profit/loss and label change
             var profitLossColor = profitLossUsd >= 0 ? "green" : "red";
             var profitLossColorToman = profitLossToman >= 0 ? "green" : "red";
+            var profitLossLabel = profitLossUsd >= 0 ? "Profit" : "Loss";
 
             totalValueUsd += parseFloat(totalCryptoValueUsd);
             totalValueToman += parseInt(totalCryptoValueToman);
@@ -149,8 +150,8 @@
               "<div class='price' style='color: black;'>Price (USD): $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + "</div>" +
               "<div class='price' style='color: black;'>Price (Toman): " + formattedPriceToman + " Toman</div>" +
               "<div class='price' style='color: black;'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
-              "<div class='value' style='color:" + profitLossColor + "'>Profit/Loss (USD): $" + formattedProfitLossUsd + "</div>" +
-              "<div class='value' style='color:" + profitLossColorToman + "'>Profit/Loss (Toman): " + formattedProfitLossToman + " Toman</div>" +
+              "<div class='value' style='color:" + profitLossColor + "'>" + profitLossLabel + " (USD): $" + formattedProfitLossUsd + "</div>" +
+              "<div class='value' style='color:" + profitLossColorToman + "'>" + profitLossLabel + " (Toman): " + formattedProfitLossToman + " Toman</div>" +
               "<div class='value' style='color:" + profitLossColor + "'>Total Value (USD): $" + formattedTotalCryptoValueUsd + "</div>" +
               "<div class='value' style='color:" + profitLossColorToman + "'>Total Value (Toman): " + formattedTotalCryptoValueToman + " Toman</div>" +
               "</div>"
@@ -162,7 +163,8 @@
         var formattedTotalValueToman = totalValueToman.toLocaleString("en-US");
         var formattedTotalValueUsd = totalValueUsd.toLocaleString("en-US", { minimumFractionDigits: 2 });
         totalValueElement.innerHTML =
-          "Total Portfolio Value: $" + formattedTotalValueUsd + " / " + formattedTotalValueToman + " Toman";
+          "<div style='color: darkpurple;'>Total Portfolio Value (USD): $" + formattedTotalValueUsd + "</div>" +
+          "<div style='color: darkpurple;'>Total Portfolio Value (Toman): " + formattedTotalValueToman + " Toman</div>";
       } catch (error) {
         console.error("Error fetching data:", error);
         document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
