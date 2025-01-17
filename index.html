@@ -19,10 +19,11 @@
       margin: 20px 0;
       padding: 15px;
       font-size: 1.5em;
-      color: #2c3e50;
-      background: #ecf0f1;
+      color: #fff;
+      background-color: #6a1b9a; /* Dark Purple */
       border-radius: 8px;
       display: inline-block;
+      width: 100%;
     }
     .crypto {
       display: inline-block;
@@ -147,12 +148,15 @@
           })
           .join("");
 
-        // Display total portfolio value
+        // Display total portfolio value in USD and Toman
         var totalValueElement = document.getElementById("total-value");
         var formattedTotalValueToman = totalValueToman.toLocaleString("en-US");
         var formattedTotalValueUsd = totalValueUsd.toLocaleString("en-US", { minimumFractionDigits: 2 });
-        totalValueElement.innerHTML =
-          "Total Portfolio Value: $" + formattedTotalValueUsd + " / " + formattedTotalValueToman + " Toman";
+
+        totalValueElement.innerHTML = 
+          "<div style='color: #fff; font-size: 1.3em;'>Total Portfolio Value:</div>" +
+          "<div style='color: #fff;'>USD: $" + formattedTotalValueUsd + "</div>" +
+          "<div style='color: #fff;'>Toman: " + formattedTotalValueToman + " Toman</div>";
       } catch (error) {
         console.error("Error fetching data:", error);
         document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
