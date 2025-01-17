@@ -59,6 +59,7 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin-top: 20px; /* Adjust the button position here */
     }
     button:hover {
       background-color: #2980b9;
@@ -100,7 +101,7 @@
         var usdToToman = usdToIrr / 10; // Convert IRR to Toman
 
         // API for crypto prices
-        var cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,filecoin&vs_currencies=usd";
+        var cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,filecoin&vs_currencies=usd&include_24hr_change=true";
         var cryptoResponse = await fetch(cryptoApiUrl);
         var cryptoData = await cryptoResponse.json();
 
@@ -117,6 +118,13 @@
             var totalCryptoValueUsd = (priceUsd * crypto.amount).toFixed(2); // Total value in USD
             var totalCryptoValueToman = (priceToman * crypto.amount).toFixed(0); // Total value in Toman
 
+            // 24h price change
+            var priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
+
+            // Color logic based on 24h price change
+            var priceColor = priceChange24h >= 0 ? "#2c3e50" : "#e74c3c";  // Dark green for increase, dark red for decrease
+            var valueColor = priceChange24h >= 0 ? "#2c3e50" : "#e74c3c";  // Same logic for value
+
             // Update total portfolio value
             totalValueUsd += parseFloat(totalCryptoValueUsd);
             totalValueToman += parseInt(totalCryptoValueToman);
@@ -129,9 +137,9 @@
             return (
               '<div class="crypto">' +
               "<h2>" + crypto.name + "</h2>" +
-              "<div class='price'>Price: $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + " / " + formattedPriceToman + " Toman</div>" +
+              "<div class='price' style='color:" + priceColor + "'>Price: $" + priceUsd.toLocaleString("en-US", { minimumFractionDigits: 2 }) + " / " + formattedPriceToman + " Toman</div>" +
               "<div class='amount'>You Own: " + crypto.amount + " " + crypto.symbol + "</div>" +
-              "<div class='value'>Total Value: $" + formattedTotalCryptoValueUsd + " / " + formattedTotalCryptoValueToman + " Toman</div>" +
+              "<div class='value' style='color:" + valueColor + "'>Total Value: $" + formattedTotalCryptoValueUsd + " / " + formattedTotalCryptoValueToman + " Toman</div>" +
               "</div>"
             );
           })
