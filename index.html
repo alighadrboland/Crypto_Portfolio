@@ -155,14 +155,14 @@
             return `
               <div class="crypto">
                 <h2>${crypto.name}</h2>
-                <div class="price"><font size="-2">Price (USDT): $${priceUsd.toFixed(2)}</font></div>
-                <div class="price"><font size="-2">Price (Toman): ${priceToman.toLocaleString()}</font></div>
+                <div class="price"><font size="-1">Price (USDT): $${priceUsd.toFixed(2)}</font></div>
+                <div class="price"><font size="-1">Price (Toman): ${priceToman.toLocaleString()}</font></div>
                 <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
                 <div class="balance-usdt">Balance (USDT): $${balanceUsd}</div>
                 <p </p>
-                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()} Toman</strong></div>
+                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</strong></div>
                 <p </p>
-                <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${parseInt(profitLossToman).toLocaleString()} Toman</div>
+                <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
               </div>`;
           })
           .join("");
@@ -176,7 +176,7 @@
 
         totalValueElement.innerHTML = `
           <div>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
-          <div><strong>Total Portfolio Value (Toman): ${formattedTotalValueToman} Toman</strong></div>
+          <div><strong>Total Portfolio Value (Toman): ${formattedTotalValueToman}</strong></div>
           <div style="color:${profitLossColor};"><strong>${profitLossLabel}: ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
         console.error("Error fetching data:", error);
