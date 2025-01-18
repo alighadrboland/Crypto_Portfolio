@@ -25,17 +25,20 @@
       display: inline-block;
       width: 100%;
     }
-    .crypto {
+    .crypto-container {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px; /* Space between boxes */
+    }
+    .crypto {
+      flex: 1 1 calc(33.33% - 20px); /* 3 boxes in a row on larger screens */
+      max-width: 300px; /* Limit box width */
       margin: 10px;
       padding: 15px;
       border: 1px solid #ddd;
       border-radius: 5px;
       background: #fff;
-      width: 300px;
-      min-height: 300px;
       text-align: left;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease-in-out;
@@ -53,8 +56,9 @@
     .price {
       font-size: 1.2em;
     }
-    .highlight-purple {
-      color: #6a0dad; /* Dark purple color */
+    .balance {
+      font-size: 1.1em;
+      color: #5d3fd3; /* Dark purple for "You Own" and balance */
     }
     .input-container {
       margin-bottom: 20px;
@@ -77,10 +81,10 @@
     button:hover {
       background-color: #2980b9;
     }
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .crypto {
-        width: 100%;
-        margin-bottom: 20px;
+        flex: 1 1 100%; /* One column on smaller screens */
+        max-width: none;
       }
     }
   </style>
@@ -97,7 +101,7 @@
   <div class="total-value" id="total-value">
     Enter exchange rate to calculate portfolio value.
   </div>
-  <div id="crypto-container"></div>
+  <div class="crypto-container" id="crypto-container"></div>
 
   <script>
     const cryptos = [
@@ -149,9 +153,9 @@
                 <h2>${crypto.name}</h2>
                 <div class="price">Price (USDT): $${priceUsd.toFixed(2)}</div>
                 <div class="price">Price (Toman): ${priceToman.toLocaleString()} Toman</div>
-                <div class="price highlight-purple">You Own: ${crypto.amount} ${crypto.symbol}</div>
-                <div class="price highlight-purple">Balance (USDT): $${balanceUsd}</div>
-                <div class="price"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()} Toman</strong></div>
+                <div class="balance">You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div class="balance"><strong>Balance (USDT): $${balanceUsd}</strong></div>
+                <div class="balance"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()} Toman</strong></div>
                 <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${parseInt(profitLossToman).toLocaleString()} Toman</div>
               </div>`;
           })
