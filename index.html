@@ -175,7 +175,7 @@
 
         totalValueElement.innerHTML = `
           <div>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
-          <div><strong>Total Portfolio Value (Toman): ${formattedTotalValueToman}</strong></div>
+          <div><strong><font color=#0404b3>Total Portfolio Value (Toman): ${formattedTotalValueToman}</strong></font></div>
           <div style="color:${profitLossColor};"><strong>${profitLossLabel}: ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
         console.error("Error fetching data:", error);
