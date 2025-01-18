@@ -141,7 +141,7 @@
         cryptos.forEach((crypto) => {
           const priceUsd = cryptoData[crypto.apiId].usd;
           const balanceUsd = priceUsd * crypto.amount;
-          totalPortfolioUsd += balanceUsd;
+          totalPortfolioUsd += parseInt(balanceUsd);
         });
 
         let totalProfitLossToman = 0;
