@@ -56,9 +56,13 @@
     .price {
       font-size: 1.2em;
     }
-    .balance {
+    .balance-usdt {
       font-size: 1.1em;
-      color: #5d3fd3; /* Dark purple for "You Own" and balance */
+      color: #5d3fd3; /* Dark purple for Balance (USDT) */
+    }
+    .balance-toman {
+      font-size: 1.1em;
+      color: #000; /* Black for Balance (Toman) */
     }
     .input-container {
       margin-bottom: 20px;
@@ -153,9 +157,9 @@
                 <h2>${crypto.name}</h2>
                 <div class="price">Price (USDT): $${priceUsd.toFixed(2)}</div>
                 <div class="price">Price (Toman): ${priceToman.toLocaleString()} Toman</div>
-                <div class="balance">You Own: ${crypto.amount} ${crypto.symbol}</div>
-                <div class="balance"><strong>Balance (USDT): $${balanceUsd}</strong></div>
-                <div class="balance"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()} Toman</strong></div>
+                <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div class="balance-usdt">Balance (USDT): $${balanceUsd}</div>
+                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()} Toman</strong></div>
                 <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${parseInt(profitLossToman).toLocaleString()} Toman</div>
               </div>`;
           })
