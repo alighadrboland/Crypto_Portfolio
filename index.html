@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Crypto Portfolio</title>
   <style>
+    /* Existing styles remain unchanged */
     body {
       font-family: Arial, sans-serif;
       text-align: center;
@@ -25,15 +26,15 @@
       display: inline-block;
       width: 100%;
     }
-    .crypto-container {
+    .crypto-container, .news-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 30px; /* Space between boxes */
+      gap: 30px;
     }
-    .crypto {
-      flex: 1 1 calc(33.33% - 20px); /* 3 boxes in a row on larger screens */
-      max-width: 300px; /* Limit box width */
+    .crypto, .news {
+      flex: 1 1 calc(33.33% - 20px);
+      max-width: 300px;
       margin: 10px;
       padding: 15px;
       border: 1px solid #ddd;
@@ -41,33 +42,15 @@
       background: #fff;
       text-align: left;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease-in-out;
     }
-    .crypto:hover {
-      transform: translateY(-5px);
-    }
-    .crypto h2 {
-      margin: 5px 0;
-    }
-    .price, .value {
-      font-size: 1em;
-      padding: 5px 0;
-    }
-    .balance-usdt {
-      font-size: 1.1em;
-      color: #0404b3; /* Dark blue for Balance (USDT) */
-    }
-    .balance-toman {
-      font-size: 1em;
-      color: #000; /* Black for Balance (Toman) */
-    }
-    .input-container {
+    .input-container, .news-container {
       margin-bottom: 20px;
     }
-    input[type="number"] {
+    input[type="number"], input[type="text"] {
       padding: 10px;
       font-size: 1em;
       width: 200px;
+      margin-bottom: 10px;
     }
     button {
       padding: 10px 28px;
@@ -77,16 +60,15 @@
       border: none;
       border-radius: 7px;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     button:hover {
       background-color: #2980b9;
     }
-    @media (max-width: 768px) {
-      .crypto {
-        flex: 1 1 100%; /* One column on smaller screens */
-        max-width: none;
-      }
+    .loading {
+      display: none;
+      font-size: 1.2em;
+      color: #555;
     }
   </style>
 </head>
@@ -97,12 +79,24 @@
     <label for="exchange-rate">Enter USDT Price in Toman:</label><br>
     <input type="number" id="exchange-rate" placeholder="Enter USDT exchange rate" /><br>
     <button onclick="fetchData()">Calculate Portfolio</button>
+    <div id="loading" class="loading">Fetching data...</div>
   </div>
 
   <div class="total-value" id="total-value">
     Enter exchange rate to calculate portfolio value.
   </div>
+  
   <div class="crypto-container" id="crypto-container"></div>
+
+  <div class="input-container">
+    <h2>Add a New Crypto</h2>
+    <input type="text" id="crypto-name" placeholder="Crypto Name" />
+    <input type="text" id="crypto-symbol" placeholder="Crypto Symbol" />
+    <input type="number" id="crypto-amount" placeholder="Amount" />
+    <button onclick="addCrypto()">Add Crypto</button>
+  </div>
+
+  <div class="news-container" id="news-container"></div>
 
   <script>
     const cryptos = [
@@ -111,17 +105,29 @@
       { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 }
     ];
 
-    async function fetchData() {
-      try {
-        const exchangeRateInput = document.getElementById("exchange-rate").value;
-        if (!exchangeRateInput || exchangeRateInput <= 0) {
-          alert("Please enter a valid USD to IRR exchange rate.");
-          return;
-        }
-        const usdToToman = parseFloat(exchangeRateInput);
+    const API_BASE_URL = "https://api.coingecko.com/api/v3";
+    const NEWS_API_URL = "https://cryptonews-api.com/api/v1?tickers=BTC,ETH,FIL&items=5&token=YOUR_API_KEY";
 
-        const cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,filecoin&vs_currencies=usd&include_24hr_change=true";
-        const cryptoResponse = await fetch(cryptoApiUrl);
+    function formatNumber(number) {
+      return number.toLocaleString();
+    }
+
+    async function fetchData() {
+      const exchangeRateInput = document.getElementById("exchange-rate").value;
+      const loadingIndicator = document.getElementById("loading");
+      loadingIndicator.style.display = "block";
+      
+      if (!exchangeRateInput || exchangeRateInput <= 0) {
+        alert("Please enter a valid USD to IRR exchange rate.");
+        loadingIndicator.style.display = "none";
+        return;
+      }
+      const usdToToman = parseFloat(exchangeRateInput);
+
+      try {
+        const cryptoResponse = await fetch(
+          `${API_BASE_URL}/simple/price?ids=${cryptos.map(c => c.apiId).join(",")}&vs_currencies=usd&include_24hr_change=true`
+        );
         const cryptoData = await cryptoResponse.json();
 
         let totalValueUsd = 0;
@@ -130,53 +136,84 @@
 
         const container = document.getElementById("crypto-container");
         container.innerHTML = cryptos
-          .map((crypto) => {
+          .map(crypto => {
             const priceUsd = cryptoData[crypto.apiId].usd;
             const priceToman = priceUsd * usdToToman;
-            const balanceUsd = Math.round(priceUsd * crypto.amount);
-            const balanceToman = Math.round(priceToman * crypto.amount);
+            const balanceUsd = priceUsd * crypto.amount;
+            const balanceToman = priceToman * crypto.amount;
 
             const priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
-            const price24hAgoUsd = priceUsd / (1 + priceChange24h / 100);
-            const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
-            const profitLossToman = Math.round(profitLossUsd * usdToToman);
+            const profitLossUsd = priceUsd * priceChange24h / 100 * crypto.amount;
+            const profitLossToman = profitLossUsd * usdToToman;
 
             totalValueUsd += balanceUsd;
             totalValueToman += balanceToman;
             totalProfitLossToman += profitLossToman;
 
-            const profitLossColor = profitLossToman >= 0 ? "green" : "red";
-            const profitLossLabel = profitLossToman >= 0 ? "Profit in 24h" : "Loss in 24h";
-
             return `
               <div class="crypto">
                 <h2>${crypto.name}</h2>
-                <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
-                <div class="price">Price (Toman): ${priceToman.toLocaleString()}</div>
-                <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
-                <div class="balance-usdt">Balance (USDT): $${balanceUsd.toLocaleString()}</div>
-                <div class="balance-toman"><strong>Balance (Toman): ${balanceToman.toLocaleString()}</strong></div>
-                <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${profitLossToman.toLocaleString()}</div>
-              </div>`;
+                <div>Price (USDT): $${formatNumber(priceUsd)}</div>
+                <div>Price (Toman): ${formatNumber(priceToman)}</div>
+                <div>You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div>Balance (USDT): $${formatNumber(balanceUsd)}</div>
+                <div>Balance (Toman): ${formatNumber(balanceToman)}</div>
+                <div style="color:${profitLossToman >= 0 ? "green" : "red"}">
+                  ${profitLossToman >= 0 ? "Profit" : "Loss"}: ${formatNumber(profitLossToman)} Toman
+                </div>
+              </div>
+            `;
           })
           .join("");
 
         const totalValueElement = document.getElementById("total-value");
-        const formattedTotalValueToman = totalValueToman.toLocaleString();
-        const formattedTotalProfitLossToman = totalProfitLossToman.toLocaleString();
-
-        const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
-        const profitLossLabel = totalProfitLossToman >= 0 ? "Portfolio Profit in 24h (Toman)" : "Portfolio Loss in 24h (Toman)";
-
         totalValueElement.innerHTML = `
-          <div><strong>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString()}</strong></div>
-          <div><strong style="color:#0404b3;">Total Portfolio Value (Toman): ${formattedTotalValueToman}</strong></div>
-          <div style="color:${profitLossColor};"><strong>${profitLossLabel}: ${formattedTotalProfitLossToman}</strong></div>`;
+          <div>Total Portfolio Value (USDT): $${formatNumber(totalValueUsd)}</div>
+          <div>Total Portfolio Value (Toman): ${formatNumber(totalValueToman)}</div>
+          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"}">
+            ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h: ${formatNumber(totalProfitLossToman)} Toman
+          </div>
+        `;
       } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
+        console.error(error);
+        alert("Error fetching data.");
+      } finally {
+        loadingIndicator.style.display = "none";
       }
     }
+
+    async function fetchNews() {
+      const newsContainer = document.getElementById("news-container");
+      try {
+        const response = await fetch(NEWS_API_URL);
+        const data = await response.json();
+        newsContainer.innerHTML = data.data.map(article => `
+          <div class="news">
+            <h3>${article.title}</h3>
+            <a href="${article.url}" target="_blank">Read more</a>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error("Error fetching news:", error);
+        newsContainer.innerHTML = "<p>Error fetching news.</p>";
+      }
+    }
+
+    function addCrypto() {
+      const name = document.getElementById("crypto-name").value.trim();
+      const symbol = document.getElementById("crypto-symbol").value.trim();
+      const amount = parseFloat(document.getElementById("crypto-amount").value);
+
+      if (!name || !symbol || isNaN(amount) || amount <= 0) {
+        alert("Please fill out all fields correctly.");
+        return;
+      }
+
+      cryptos.push({ name, symbol, apiId: name.toLowerCase(), amount });
+      fetchData(); // Recalculate portfolio
+    }
+
+    fetchNews();
   </script>
 </body>
 </html>
