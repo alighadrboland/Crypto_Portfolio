@@ -114,6 +114,7 @@
     const cryptos = [
       { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.13463035 },
       { name: "Ethereum", symbol: "ETH", apiId: "ethereum", amount: 0.37546643 },
+      { name: "Major", symbol: "MAJOR", apiId: "major", amount: 161.32985346 },
       { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 }
     ];
 
@@ -128,7 +129,7 @@
         }
         const usdToToman = parseFloat(exchangeRateInput);
 
-        const cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,filecoin&vs_currencies=usd&include_24hr_change=true";
+        const cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,major,filecoin&vs_currencies=usd&include_24hr_change=true";
         const cryptoResponse = await fetch(cryptoApiUrl);
         const cryptoData = await cryptoResponse.json();
 
