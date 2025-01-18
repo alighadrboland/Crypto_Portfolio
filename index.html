@@ -164,7 +164,7 @@
         var formattedTotalValueUsd = totalValueUsd.toLocaleString("en-US", { minimumFractionDigits: 2 });
         totalValueElement.innerHTML =
           "<div style='color: darkpurple;'>Total Portfolio Value (USDT): $" + formattedTotalValueUsd + "</div>" +
-          "<div style='color: darkpurple;'>Total Portfolio Value (Toman): " + formattedTotalValueToman + " Toman</div>";
+          "<div style='color: darkpurple;'><strong>Total Portfolio Value (Toman): " + formattedTotalValueToman + " Toman</strong></div>";
       } catch (error) {
         console.error("Error fetching data:", error);
         document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
