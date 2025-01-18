@@ -172,7 +172,7 @@
 
             return `
               <div class="crypto" style="border: ${borderColor};">
-                <h2>${crypto.name} (${portfolioPercentage}% of your portfolio)</h2>
+                <h2>${crypto.name} <font size:2em(${portfolioPercentage}% of your portfolio)</font></h2>
                 <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
                 <div class="price">Price (Toman): ${priceToman.toLocaleString()}</div>
                 <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
