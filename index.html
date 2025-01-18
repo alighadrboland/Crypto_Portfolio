@@ -152,10 +152,10 @@
             return `
               <div class="crypto">
                 <h2>${crypto.name}</h2>
-                <div class="price"><font size="-2">Price (USDT): $${priceUsd.toLocaleString()}</font></div>
-                <div class="price"><font size="-2">Price (Toman): ${priceToman.toLocaleString()}</font></div>
-                <div class="balance-usdt"><font size="-1">You Own: ${crypto.amount} ${crypto.symbol}</font></div>
-                <div class="balance-usdt"><font size="-1">Balance (USDT): $${balanceUsd.toLocaleString()}</font></div>
+                <div class="price"><fontsize:2em>Price (USDT): $${priceUsd.toLocaleString()}</font></div>
+                <div class="price"><fontsize:2em>Price (Toman): ${priceToman.toLocaleString()}</font></div>
+                <div class="balance-usdt"><fontsize:2em>You Own: ${crypto.amount} ${crypto.symbol}</font></div>
+                <div class="balance-usdt"><fontsize:2em>Balance (USDT): $${balanceUsd.toLocaleString()}</font></div>
                 <div class="balance-toman"><strong>Balance (Toman): ${balanceToman.toLocaleString()}</strong></div>
                 <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${profitLossToman.toLocaleString()}</div>
               </div>`;
