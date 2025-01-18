@@ -183,8 +183,8 @@
           .join("");
 
         const totalValueElement = document.getElementById("total-value");
-        const formattedTotalPortfolioToman = totalPortfolioToman.toLocaleString();
-        const formattedTotalProfitLossToman = totalProfitLossToman.toLocaleString();
+        const formattedTotalPortfolioToman = parseInt(totalPortfolioToman).toLocaleString();
+        const formattedTotalProfitLossToman = parseInt(totalProfitLossToman).toLocaleString();
 
         const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
 
