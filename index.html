@@ -156,7 +156,7 @@
         const formattedTotalProfitLossToman = totalProfitLossToman.toLocaleString();
 
         const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
-        const profitLossLabel = totalProfitLossToman >= 0 ? "24h Portfolio Profit (Toman)" : "24h Portfolio Loss (Toman)";
+        const profitLossLabel = totalProfitLossToman >= 0 ? "Portfolio Profit in 24h (Toman)" : "Portfolio Loss in 24h (Toman)";
 
         totalValueElement.innerHTML = `
           <div>Total Portfolio Value (USD): $${totalValueUsd.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
