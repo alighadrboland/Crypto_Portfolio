@@ -58,7 +58,7 @@
       color: #0404b3; /* Dark blue for Balance (USDT) */
     }
     .balance-toman {
-      font-size: 1.2em;
+      font-size: 1.1em;
       color: #000; /* Black for Balance (Toman) */
     }
     .input-container {
@@ -169,7 +169,7 @@
 
             return `
               <div class="crypto" style="border: ${borderColor};">
-                <h2>${crypto.name} (${portfolioPercentage}% of your portfolio)</h2>
+                <h2>${crypto.name} (<span style="font-size: 0.8em;">${portfolioPercentage}% of your portfolio</span>)</h2>
                 <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
                 <div class="price">Price (Toman): ${priceToman.toLocaleString()}</div>
                 <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
