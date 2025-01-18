@@ -26,15 +26,18 @@
       width: 100%;
     }
     .crypto {
-      display: inline-block;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       margin: 10px;
       padding: 15px;
       border: 1px solid #ddd;
       border-radius: 5px;
       background: #fff;
       width: 300px;
+      min-height: 300px;
       text-align: left;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease-in-out;
     }
     .crypto:hover {
@@ -49,6 +52,9 @@
     }
     .price {
       font-size: 1.2em;
+    }
+    .highlight-purple {
+      color: #6a0dad; /* Dark purple color */
     }
     .input-container {
       margin-bottom: 20px;
@@ -143,8 +149,8 @@
                 <h2>${crypto.name}</h2>
                 <div class="price">Price (USDT): $${priceUsd.toFixed(2)}</div>
                 <div class="price">Price (Toman): ${priceToman.toLocaleString()} Toman</div>
-                <div class="price">You Own: ${crypto.amount} ${crypto.symbol}</div>
-                <div class="price">Balance (USDT): $${balanceUsd}</div>
+                <div class="price highlight-purple">You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div class="price highlight-purple">Balance (USDT): $${balanceUsd}</div>
                 <div class="price"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()} Toman</strong></div>
                 <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${parseInt(profitLossToman).toLocaleString()} Toman</div>
               </div>`;
