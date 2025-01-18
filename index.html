@@ -36,7 +36,7 @@
       max-width: 300px; /* Limit box width */
       margin: 10px;
       padding: 15px;
-      color: #3498db;
+      color: #1a0261;
       border: 1px solid #ddd;
       border-radius: 5px;
       background: #fff;
@@ -141,7 +141,7 @@
         cryptos.forEach((crypto) => {
           const priceUsd = cryptoData[crypto.apiId].usd;
           const balanceUsd = priceUsd * crypto.amount;
-          totalPortfolioUsd += parseInt(balanceUsd);
+          totalPortfolioUsd += balanceUsd;
         });
 
         let totalProfitLossToman = 0;
@@ -189,7 +189,7 @@
         const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
 
         totalValueElement.innerHTML = `
-          <div><strong style="color:#072b03;">Total Portfolio Value (USDT): $${totalPortfolioUsd.toLocaleString()}</strong></div>
+          <div><strong style="color:#072b03;">Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
           <div><strong style="color:#0404b3;">Total Portfolio Value (Toman): ${formattedTotalPortfolioToman}</strong></div>
           <div style="color:${profitLossColor};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
