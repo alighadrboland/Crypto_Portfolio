@@ -152,10 +152,10 @@
             return `
               <div class="crypto">
                 <h2>${crypto.name}</h2>
-                <div class="price"><fontsize="-0.8">Price (USDT): $${priceUsd.toLocaleString()}</font></div>
-                <div class="price"><fontsize="-0.8">Price (Toman): ${priceToman.toLocaleString()}</font></div>
-                <div class="balance-usdt"><fontsize="-0.5">You Own: ${crypto.amount} ${crypto.symbol}</font></div>
-                <div class="balance-usdt"><fontsize="-0.5">Balance (USDT): $${balanceUsd.toLocaleString()}</font></div>
+                <div class="price"><fontsize="-2">Price (USDT): $${priceUsd.toLocaleString()}</font></div>
+                <div class="price"><fontsize="-2">Price (Toman): ${priceToman.toLocaleString()}</font></div>
+                <div class="balance-usdt"><fontsize="-1">You Own: ${crypto.amount} ${crypto.symbol}</font></div>
+                <div class="balance-usdt"><fontsize="-1">Balance (USDT): $${balanceUsd.toLocaleString()}</font></div>
                 <div class="balance-toman"><strong>Balance (Toman): ${balanceToman.toLocaleString()}</strong></div>
                 <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${profitLossToman.toLocaleString()}</div>
               </div>`;
@@ -170,8 +170,8 @@
         const profitLossLabel = totalProfitLossToman >= 0 ? "Portfolio Profit in 24h (Toman)" : "Portfolio Loss in 24h (Toman)";
 
         totalValueElement.innerHTML = `
-          <div><strong><font color=#0404b3>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString()}</font></strong></div>
-          <div><strong>Total Portfolio Value (Toman): ${formattedTotalValueToman}</strong></div>
+          <div><strong>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString()}</strong></div>
+          <div><strong><font color=#0404b3>Total Portfolio Value (Toman): ${formattedTotalValueToman}</font></strong></div>
           <div style="color:${profitLossColor};"><strong>${profitLossLabel}: ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
         console.error("Error fetching data:", error);
