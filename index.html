@@ -167,7 +167,7 @@
 
         const totalValueElement = document.getElementById("total-value");
         const formattedTotalValueToman = totalValueToman.toLocaleString();
-        const formattedTotalProfitLossToman = totalProfitLossToman.toLocaleString();
+        const formattedTotalProfitLossToman = parseInt(totalProfitLossToman).toLocaleString();
 
         const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
         const profitLossLabel = totalProfitLossToman >= 0 ? "Portfolio Profit in 24h (Toman)" : "Portfolio Loss in 24h (Toman)";
