@@ -189,7 +189,7 @@
         const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
 
         totalValueElement.innerHTML = `
-          <div><strong style="color:#072b03;">Total Portfolio Value (USDT): $${totalPortfolioUsd.toLocaleString()}</strong></div>
+          <div><strong style="color:#072b03;">Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd.toLocaleString())}</strong></div>
           <div><strong style="color:#0404b3;">Total Portfolio Value (Toman): ${formattedTotalPortfolioToman}</strong></div>
           <div style="color:${profitLossColor};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
