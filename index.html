@@ -155,8 +155,8 @@
             return `
               <div class="crypto">
                 <h2>${crypto.name}</h2>
-                <div class="price">Price (USDT): $${priceUsd.toFixed(2)}</div>
-                <div class="price">Price (Toman): ${priceToman.toLocaleString()} Toman</div>
+                <div class="price"><font size="-2">Price (USDT): $${priceUsd.toFixed(2)}</font></div>
+                <div class="price"><font size="-2">Price (Toman): ${priceToman.toLocaleString()}</font></div>
                 <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
                 <div class="balance-usdt">Balance (USDT): $${balanceUsd}</div>
                 <p </p>
@@ -177,7 +177,7 @@
         totalValueElement.innerHTML = `
           <div>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
           <div><strong>Total Portfolio Value (Toman): ${formattedTotalValueToman} Toman</strong></div>
-          <div style="color:${profitLossColor};"><strong>${profitLossLabel}: ${formattedTotalProfitLossToman} Toman</strong></div>`;
+          <div style="color:${profitLossColor};"><strong>${profitLossLabel}: ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
         console.error("Error fetching data:", error);
         document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
