@@ -53,9 +53,6 @@
       font-size: 1.1em;
       padding: 5px 0;
     }
-    .price {
-      font-size: 1.2em;
-    }
     .balance-usdt {
       font-size: 1.2em;
       color: #0404b3; /* Dark blue for Balance (USDT) */
@@ -137,16 +134,16 @@
           .map((crypto) => {
             const priceUsd = cryptoData[crypto.apiId].usd;
             const priceToman = priceUsd * usdToToman;
-            const balanceUsd = (priceUsd * crypto.amount).toFixed(2);
-            const balanceToman = (priceToman * crypto.amount).toFixed(0);
+            const balanceUsd = Math.round(priceUsd * crypto.amount); // Convert to integer
+            const balanceToman = Math.round(priceToman * crypto.amount);
 
             const priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
             const price24hAgoUsd = priceUsd / (1 + priceChange24h / 100);
             const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
-            const profitLossToman = profitLossUsd * usdToToman;
+            const profitLossToman = Math.round(profitLossUsd * usdToToman);
 
-            totalValueUsd += parseFloat(balanceUsd);
-            totalValueToman += parseInt(balanceToman);
+            totalValueUsd += balanceUsd;
+            totalValueToman += balanceToman;
             totalProfitLossToman += profitLossToman;
 
             const profitLossColor = profitLossToman >= 0 ? "green" : "red";
@@ -155,27 +152,26 @@
             return `
               <div class="crypto">
                 <h2>${crypto.name}</h2>
-                <div class="price"><font size="-0.5">Price (USDT): $${priceUsd.toLocaleString()}</font></div>
-                <div class="price"><font size="-0.5">Price (Toman): ${priceToman.toLocaleString()}</font></div>
-                <div class="balance-usdt"><font size="-0.5">You Own: ${crypto.amount} ${crypto.symbol}</font></div>
-                <div class="balance-usdt"><font size="-0.5">Balance (USDT): $${balanceUsd.toLocaleString()}</font></div>
-                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</strong></div>
-                <p </p>
-                <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
+                <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
+                <div class="price">Price (Toman): ${priceToman.toLocaleString()}</div>
+                <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div class="balance-usdt">Balance (USDT): $${balanceUsd.toLocaleString()}</div>
+                <div class="balance-toman"><strong>Balance (Toman): ${balanceToman.toLocaleString()}</strong></div>
+                <div class="value" style="color:${profitLossColor}">${profitLossLabel} (Toman): ${profitLossToman.toLocaleString()}</div>
               </div>`;
           })
           .join("");
 
         const totalValueElement = document.getElementById("total-value");
         const formattedTotalValueToman = totalValueToman.toLocaleString();
-        const formattedTotalProfitLossToman = parseInt(totalProfitLossToman).toLocaleString();
+        const formattedTotalProfitLossToman = totalProfitLossToman.toLocaleString();
 
         const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
         const profitLossLabel = totalProfitLossToman >= 0 ? "Portfolio Profit in 24h (Toman)" : "Portfolio Loss in 24h (Toman)";
 
         totalValueElement.innerHTML = `
           <div><strong>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString()}</strong></div>
-          <div><strong><font color=#0404b3>Total Portfolio Value (Toman): ${formattedTotalValueToman}</strong></font></div>
+          <div><strong>Total Portfolio Value (Toman): ${formattedTotalValueToman}</strong></div>
           <div style="color:${profitLossColor};"><strong>${profitLossLabel}: ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
         console.error("Error fetching data:", error);
