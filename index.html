@@ -174,7 +174,7 @@
         const profitLossLabel = totalProfitLossToman >= 0 ? "Portfolio Profit in 24h (Toman)" : "Portfolio Loss in 24h (Toman)";
 
         totalValueElement.innerHTML = `
-          <div><strong>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString()}</strong></div>
+          <div><strong>Total Portfolio Value (USDT): $${totalValueUsd.toLocaleString().toFixed(0)}</strong></div>
           <div><strong><font color=#0404b3>Total Portfolio Value (Toman): ${formattedTotalValueToman}</strong></font></div>
           <div style="color:${profitLossColor};"><strong>${profitLossLabel}: ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
