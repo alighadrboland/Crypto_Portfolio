@@ -198,11 +198,6 @@
           <p </p>
           <div><strong style="color:#0404b3;">Total Portfolio Value (Toman): ${formattedTotalPortfolioToman}</strong></div>
           <div style="color:${profitLossColor};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${formattedTotalProfitLossToman}</strong></div>`;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
-      } finally {
-        loadingIndicator.style.display = "none"; // Hide loading message
       }
        function calculateGoldValue(button) {
         const box = button.parentElement;
@@ -221,6 +216,11 @@
           <div><strong>Value of Your Gold: ${parseInt(y).toLocaleString()}</strong></div>
           <div><strong>Total You Earn: ${(y + totalPortfolioValue).toLocaleString()}</strong></div>
         `;
+      }catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
+      } finally {
+        loadingIndicator.style.display = "none"; // Hide loading message
       }
     }
   </script>
