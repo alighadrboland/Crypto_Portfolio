@@ -44,27 +44,49 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease-in-out;
     }
+    .crypto:hover {
+      transform: translateY(-5px);
+    }
+    .crypto h2 {
+      margin: 5px 0;
+    }
+    .price, .value {
+      font-size: 1em;
+      padding: 5px 0;
+    }
     button {
-      padding: 10px 28px;
+      padding: 10px 20px;
       font-size: 1.2em;
       color: white;
       background-color: #3498db;
       border: none;
-      border-radius: 7px;
+      border-radius: 5px;
       cursor: pointer;
       margin: 10px;
+      width: 200px;
     }
     button:hover {
       background-color: #2980b9;
     }
-    button:disabled {
-      background-color: #b0bec5;
-      cursor: not-allowed;
-    }
-    .button-row {
+    .button-container {
       display: flex;
       justify-content: center;
       gap: 20px;
+    }
+    #loading {
+      font-size: 1.2em;
+      color: #555;
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .crypto {
+        flex: 1 1 100%;
+        max-width: none;
+      }
+      .button-container {
+        flex-direction: column;
+        gap: 10px;
+      }
     }
   </style>
 </head>
@@ -72,11 +94,12 @@
   <h1>My Crypto Portfolio</h1>
 
   <div class="input-container">
-    <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" /><br>
-    <div class="button-row">
-      <button id="calculate-btn" onclick="fetchData()">Calculate Portfolio</button>
-      <button id="add-gold-btn" onclick="addGoldBox()" disabled>Add Gold</button>
-    </div>
+    <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" />
+  </div>
+
+  <div class="button-container">
+    <button onclick="fetchData()">Calculate Portfolio</button>
+    <button onclick="addGoldBox()">Add Gold</button>
   </div>
 
   <div id="loading">Fetching data...</div>
@@ -88,60 +111,55 @@
       { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.13463035 },
       { name: "Ethereum", symbol: "ETH", apiId: "ethereum", amount: 0.37546643 },
       { name: "Major", symbol: "MAJOR", apiId: "major", amount: 161.32985346 },
-      { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 }
+      { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 },
     ];
 
     async function fetchData() {
       const loadingIndicator = document.getElementById("loading");
-      const addGoldBtn = document.getElementById("add-gold-btn");
       loadingIndicator.style.display = "block";
+
       try {
         const exchangeRateInput = document.getElementById("exchange-rate").value;
         if (!exchangeRateInput || exchangeRateInput <= 0) {
           alert("Please enter a valid USD to IRR exchange rate.");
           return;
         }
+
         const usdToToman = parseFloat(exchangeRateInput);
+        const apiUrl =
+          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,major,filecoin&vs_currencies=usd&include_24hr_change=true";
+        const response = await fetch(apiUrl);
+        const data = await response.json();
 
-        const cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,major,filecoin&vs_currencies=usd&include_24hr_change=true";
-        const cryptoResponse = await fetch(cryptoApiUrl);
-        const cryptoData = await cryptoResponse.json();
-
-        let totalPortfolioUsd = 0;
-        let totalPortfolioToman = 0;
-
-        cryptos.forEach((crypto) => {
-          const priceUsd = cryptoData[crypto.apiId].usd;
-          const balanceUsd = priceUsd * crypto.amount;
-          totalPortfolioUsd += balanceUsd;
-        });
+        let totalUsd = 0;
+        let totalToman = 0;
 
         const container = document.getElementById("crypto-container");
         container.innerHTML = cryptos
           .map((crypto) => {
-            const priceUsd = cryptoData[crypto.apiId].usd;
+            const priceUsd = data[crypto.apiId].usd;
             const priceToman = priceUsd * usdToToman;
             const balanceUsd = priceUsd * crypto.amount;
             const balanceToman = priceToman * crypto.amount;
 
+            totalUsd += balanceUsd;
+            totalToman += balanceToman;
+
             return `
               <div class="crypto">
-                <h2>${crypto.name}</h2>
+                <h2>${crypto.name} (${crypto.symbol})</h2>
                 <div>Price (USDT): $${priceUsd.toFixed(2)}</div>
-                <div>Price (Toman): ${priceToman.toLocaleString()}</div>
-                <div>You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div>Price (Toman): ${Math.round(priceToman).toLocaleString()}</div>
+                <div>Amount: ${crypto.amount}</div>
                 <div>Balance (USDT): $${balanceUsd.toFixed(2)}</div>
-                <div>Balance (Toman): ${balanceToman.toLocaleString()}</div>
+                <div>Balance (Toman): ${Math.round(balanceToman).toLocaleString()}</div>
               </div>`;
           })
           .join("");
 
-        const totalValueElement = document.getElementById("total-value");
-        totalValueElement.innerHTML = `
-          <strong>Total Portfolio Value (USDT): $${totalPortfolioUsd.toFixed(2)}</strong><br>
-          <strong>Total Portfolio Value (Toman): ${totalPortfolioToman.toLocaleString()}</strong>`;
-
-        addGoldBtn.disabled = false; // Enable the Add Gold button
+        document.getElementById("total-value").innerHTML = `
+          Total Portfolio Value: $${totalUsd.toFixed(2)} (Toman: ${Math.round(totalToman).toLocaleString()})
+        `;
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -150,7 +168,29 @@
     }
 
     function addGoldBox() {
-      alert("Gold functionality is enabled!");
+      const container = document.getElementById("crypto-container");
+      const goldBox = document.createElement("div");
+      goldBox.className = "crypto";
+      goldBox.innerHTML = `
+        <h2>Gold</h2>
+        <input type="number" id="gold-price" placeholder="Gold price (per gram)" />
+        <button onclick="calculateGoldValue(this)">Calculate Gold Value</button>
+        <div id="gold-result"></div>
+      `;
+      container.appendChild(goldBox);
+    }
+
+    function calculateGoldValue(button) {
+      const box = button.parentElement;
+      const priceInput = box.querySelector("#gold-price").value;
+
+      if (!priceInput || priceInput <= 0) {
+        alert("Please enter a valid gold price.");
+        return;
+      }
+
+      const value = parseFloat(priceInput) * 1.5; // Example multiplier
+      box.querySelector("#gold-result").innerText = `Gold Value: ${value.toFixed(2)}`;
     }
   </script>
 </body>
