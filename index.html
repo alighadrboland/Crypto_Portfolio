@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Crypto Portfolio</title>
   <style>
+    /* General styling for the page */
     body {
       font-family: Arial, sans-serif;
       text-align: center;
@@ -29,14 +30,13 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 5px; /* Space between boxes */
+      gap: 10px;
     }
     .crypto {
-      flex: 1 1 calc(33.33% - 20px); /* 3 boxes in a row on larger screens */
-      max-width: 300px; /* Limit box width */
+      flex: 1 1 calc(33.33% - 20px);
+      max-width: 300px;
       margin: 10px;
       padding: 15px;
-      color: #380e07;
       border: 1px solid #ddd;
       border-radius: 5px;
       background: #fff;
@@ -46,21 +46,6 @@
     }
     .crypto:hover {
       transform: translateY(-5px);
-    }
-    .crypto h2 {
-      margin: 5px 0;
-    }
-    .price, .value {
-      font-size: 1em;
-      padding: 5px 0;
-    }
-    .balance-usdt {
-      font-size: 1em;
-      color: #0404b3; /* Dark blue for Balance (USDT) */
-    }
-    .balance-toman {
-      font-size: 1.1em;
-      color: #000; /* Black for Balance (Toman) */
     }
     .input-container {
       margin-bottom: 20px;
@@ -78,22 +63,30 @@
       border: none;
       border-radius: 7px;
       cursor: pointer;
-      margin-top: 20px;
     }
     button:hover {
       background-color: #2980b9;
     }
-    #loading {
-      font-size: 1.2em;
-      color: #555;
-      display: none; /* Hidden by default */
+    /* Progress bar styles */
+    #progress-bar-container {
+      display: none;
+      width: 100%;
+      height: 25px;
+      background: #ddd;
+      border-radius: 5px;
+      margin: 20px auto;
+      max-width: 400px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #3498db;
+      transition: width 0.3s ease;
     }
     @media (max-width: 768px) {
-      .total-value div {
-        display: block; /* Values go to next row on smaller screens */
-      }
       .crypto {
-        flex: 1 1 100%; /* One column on smaller screens */
+        flex: 1 1 100%;
         max-width: none;
       }
     }
@@ -102,16 +95,25 @@
 <body>
   <h1>My Crypto Portfolio</h1>
 
+  <!-- Input field for exchange rate -->
   <div class="input-container">
-    <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" /><br>
+    <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" />
     <button onclick="fetchData()">Calculate Portfolio</button>
   </div>
 
-  <div id="loading">Fetching data...</div>
-  <div class="total-value" id="total-value">
+  <!-- Progress bar container -->
+  <div id="progress-bar-container">
+    <div id="progress-bar"></div>
   </div>
+
+  <!-- Total portfolio value -->
+  <div class="total-value" id="total-value"></div>
+
+  <!-- Crypto details container -->
   <div class="crypto-container" id="crypto-container"></div>
+
   <script>
+    // Cryptocurrency data array
     const cryptos = [
       { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.13463035 },
       { name: "Ethereum", symbol: "ETH", apiId: "ethereum", amount: 0.37546643 },
@@ -119,10 +121,16 @@
       { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 }
     ];
 
+    // Function to fetch data and update portfolio
     async function fetchData() {
-      const loadingIndicator = document.getElementById("loading");
-      loadingIndicator.style.display = "block"; // Show loading message
+      // Show the progress bar
+      const progressBarContainer = document.getElementById("progress-bar-container");
+      const progressBar = document.getElementById("progress-bar");
+      progressBarContainer.style.display = "block";
+      progressBar.style.width = "0%"; // Reset progress bar width
+
       try {
+        // Get the exchange rate entered by the user
         const exchangeRateInput = document.getElementById("exchange-rate").value;
         if (!exchangeRateInput || exchangeRateInput <= 0) {
           alert("Please enter a valid USD to IRR exchange rate.");
@@ -130,22 +138,22 @@
         }
         const usdToToman = parseFloat(exchangeRateInput);
 
+        // Set the progress bar to 25% while fetching data
+        progressBar.style.width = "25%";
+
+        // Fetch cryptocurrency prices from the API
         const cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,major,filecoin&vs_currencies=usd&include_24hr_change=true";
         const cryptoResponse = await fetch(cryptoApiUrl);
         const cryptoData = await cryptoResponse.json();
 
+        // Set the progress bar to 50% after data fetch
+        progressBar.style.width = "50%";
+
         let totalPortfolioUsd = 0;
         let totalPortfolioToman = 0;
-
-        // Calculate total portfolio value
-        cryptos.forEach((crypto) => {
-          const priceUsd = cryptoData[crypto.apiId].usd;
-          const balanceUsd = priceUsd * crypto.amount;
-          totalPortfolioUsd += balanceUsd;
-        });
-
         let totalProfitLossToman = 0;
 
+        // Generate HTML for each cryptocurrency and calculate totals
         const container = document.getElementById("crypto-container");
         container.innerHTML = cryptos
           .map((crypto) => {
@@ -159,46 +167,45 @@
             const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
             const profitLossToman = profitLossUsd * usdToToman;
 
+            totalPortfolioUsd += balanceUsd;
             totalPortfolioToman += balanceToman;
             totalProfitLossToman += profitLossToman;
 
             const profitLossColor = profitLossToman >= 0 ? "green" : "red";
-            const borderColor = profitLossToman >= 0 ? "2px solid green" : "2px solid red";
-
-            // Calculate portfolio percentage
-            const portfolioPercentage = ((balanceUsd / totalPortfolioUsd) * 100).toFixed(2);
 
             return `
-              <div class="crypto" style="border: ${borderColor};">
-                <h2>${crypto.name} <span style="font-size: 0.6em;">( ${portfolioPercentage}% of your portfolio )</span></h2>
-                <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
-                <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
-                <p </p>
-                <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
-                <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
-                <p </p>
-                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</strong></div>
-                <div class="value" style="color:${profitLossColor}">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
+              <div class="crypto">
+                <h2>${crypto.name}</h2>
+                <div>Price (USDT): $${priceUsd.toLocaleString()}</div>
+                <div>Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
+                <div>You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div>Balance (USDT): $${balanceUsd.toLocaleString()}</div>
+                <div>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</div>
+                <div style="color:${profitLossColor};">24h ${profitLossToman >= 0 ? "Profit" : "Loss"}: ${parseInt(profitLossToman).toLocaleString()} Toman</div>
               </div>`;
           })
           .join("");
 
+        // Set the progress bar to 75% while rendering data
+        progressBar.style.width = "75%";
+
+        // Display total portfolio value
         const totalValueElement = document.getElementById("total-value");
-        const formattedTotalPortfolioToman = parseInt(totalPortfolioToman).toLocaleString();
-        const formattedTotalProfitLossToman = parseInt(totalProfitLossToman).toLocaleString();
-
-        const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
-
         totalValueElement.innerHTML = `
-          <div><strong style="color:#072b03;">Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
-          <p </p>
-          <div><strong style="color:#0404b3;">Total Portfolio Value (Toman): ${formattedTotalPortfolioToman}</strong></div>
-          <div style="color:${profitLossColor};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${formattedTotalProfitLossToman}</strong></div>`;
+          <div>Total Value (USDT): $${totalPortfolioUsd.toLocaleString()}</div>
+          <div>Total Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</div>
+          <div>Total 24h ${totalProfitLossToman >= 0 ? "Profit" : "Loss"}: ${parseInt(totalProfitLossToman).toLocaleString()} Toman</div>`;
+
+        // Set the progress bar to 100% when complete
+        progressBar.style.width = "100%";
       } catch (error) {
         console.error("Error fetching data:", error);
-        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
+        alert("Error fetching portfolio data.");
       } finally {
-        loadingIndicator.style.display = "none"; // Hide loading message
+        // Hide the progress bar after a delay
+        setTimeout(() => {
+          progressBarContainer.style.display = "none";
+        }, 1000);
       }
     }
   </script>
