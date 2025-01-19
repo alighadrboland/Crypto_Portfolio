@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Crypto Portfolio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #072b03;
+    }
+    .total-value {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1.3em;
+      color: #2c3e50;
+      background: #f9f9f9;
+      border-radius: 8px;
+      display: inline-block;
+      width: 100%;
+    }
+    .crypto-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px; /* Space between boxes */
+    }
+    .crypto {
+      flex: 1 1 calc(33.33% - 20px); /* 3 boxes in a row on larger screens */
+      max-width: 300px; /* Limit box width */
+      margin: 10px;
+      padding: 15px;
+      color: #380e07;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+    .crypto:hover {
+      transform: translateY(-5px);
+    }
+    .crypto h2 {
+      margin: 5px 0;
+    }
+    .price, .value {
+      font-size: 1em;
+      padding: 5px 0;
+    }
+    .balance-usdt {
+      font-size: 1em;
+      color: #0404b3; /* Dark blue for Balance (USDT) */
+    }
+    .balance-toman {
+      font-size: 1.1em;
+      color: #000; /* Black for Balance (Toman) */
+    }
+    .input-container {
+      margin-bottom: 20px;
+    }
+    input[type="number"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 200px;
+    }
+    button {
+      padding: 10px 28px;
+      font-size: 1.3em;
+      color: white;
+      background-color: #3498db;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    #loading {
+      font-size: 1.2em;
+      color: #555;
+      display: none; /* Hidden by default */
+    }
+    @media (max-width: 768px) {
+      .total-value div {
+        display: block; /* Values go to next row on smaller screens */
+      }
+      .crypto {
+        flex: 1 1 100%; /* One column on smaller screens */
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>My Crypto Portfolio</h1>
+
+  <div class="input-container">
+    <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" /><br>
+    <button onclick="fetchData()">Calculate Portfolio</button>
+  </div>
+
+  <div id="loading">Fetching data...</div>
+  <div class="total-value" id="total-value">
+  </div>
+  <div class="crypto-container" id="crypto-container"></div>
+  <script>
+    const cryptos = [
+      { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.13463035 },
+      { name: "Ethereum", symbol: "ETH", apiId: "ethereum", amount: 0.37546643 },
+      { name: "Major", symbol: "MAJOR", apiId: "major", amount: 161.32985346 },
+      { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 }
+    ];
+
+    async function fetchData() {
+      const loadingIndicator = document.getElementById("loading");
+      loadingIndicator.style.display = "block"; // Show loading message
+      try {
+        const exchangeRateInput = document.getElementById("exchange-rate").value;
+        if (!exchangeRateInput || exchangeRateInput <= 0) {
+          alert("Please enter a valid USD to IRR exchange rate.");
+          return;
+        }
+        const usdToToman = parseFloat(exchangeRateInput);
+
+        const cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,major,filecoin&vs_currencies=usd&include_24hr_change=true";
+        const cryptoResponse = await fetch(cryptoApiUrl);
+        const cryptoData = await cryptoResponse.json();
+
+        let totalPortfolioUsd = 0;
+        let totalPortfolioToman = 0;
+
+        // Calculate total portfolio value
+        cryptos.forEach((crypto) => {
+          const priceUsd = cryptoData[crypto.apiId].usd;
+          const balanceUsd = priceUsd * crypto.amount;
+          totalPortfolioUsd += balanceUsd;
+        });
+
+        let totalProfitLossToman = 0;
+
+        const container = document.getElementById("crypto-container");
+        container.innerHTML = cryptos
+          .map((crypto) => {
+            const priceUsd = cryptoData[crypto.apiId].usd;
+            const priceToman = priceUsd * usdToToman;
+            const balanceUsd = priceUsd * crypto.amount;
+            const balanceToman = priceToman * crypto.amount;
+
+            const priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
+            const price24hAgoUsd = priceUsd / (1 + priceChange24h / 100);
+            const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
+            const profitLossToman = profitLossUsd * usdToToman;
+
+            totalPortfolioToman += balanceToman;
+            totalProfitLossToman += profitLossToman;
+
+            const profitLossColor = profitLossToman >= 0 ? "green" : "red";
+            const borderColor = profitLossToman >= 0 ? "2px solid green" : "2px solid red";
+
+            // Calculate portfolio percentage
+            const portfolioPercentage = ((balanceUsd / totalPortfolioUsd) * 100).toFixed(2);
+
+            return `
+              <div class="crypto" style="border: ${borderColor};">
+                <h2>${crypto.name} <span style="font-size: 0.6em;">( ${portfolioPercentage}% of your portfolio )</span></h2>
+                <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
+                <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
+                <p </p>
+                <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
+                <p </p>
+                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</strong></div>
+                <div class="value" style="color:${profitLossColor}">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
+              </div>`;
+          })
+          .join("");
+
+        const totalValueElement = document.getElementById("total-value");
+        const formattedTotalPortfolioToman = parseInt(totalPortfolioToman).toLocaleString();
+        const formattedTotalProfitLossToman = parseInt(totalProfitLossToman).toLocaleString();
+
+        const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
+
+        totalValueElement.innerHTML = `
+          <div><strong style="color:#072b03;">Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
+          <p </p>
+          <div><strong style="color:#0404b3;">Total Portfolio Value (Toman): ${formattedTotalPortfolioToman}</strong></div>
+          <div style="color:${profitLossColor};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${formattedTotalProfitLossToman}</strong></div>`;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
+      } finally {
+        loadingIndicator.style.display = "none"; // Hide loading message
+      }
+    }
+  </script>
+</body>
+</html>
