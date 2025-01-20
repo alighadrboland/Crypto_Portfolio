@@ -216,8 +216,8 @@ container.innerHTML = cryptos
 
       const goldResult = document.getElementById("gold-result");
       goldResult.innerHTML = `
-        <p>Value of Your Gold: ${parseInt(goldValue.toLocaleString())}</p>
-        <p>Total You Earn: ${parseInt(totalEarned.toLocaleString())}</p>`;
+        <p>Value of Your Gold: ${parseInt(goldValue).toFixed(2).toLocaleString()}</p>
+        <p>Total You Earn: ${parseInt(totalEarned).toFixed(2).toLocaleString()}</p>`;
     }
   </script>
 </body>
