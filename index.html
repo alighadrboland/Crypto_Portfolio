@@ -107,7 +107,7 @@
 
   <div class="input-container">
     <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" /><br>
-    <button onclick="fetchData()">Calculate Portfolio</button>
+    <button onclick="fetchData()">Calculate Crypto Portfolio</button>
   </div>
 
   <div id="loading">Fetching data...</div>
@@ -179,9 +179,9 @@ container.innerHTML = cryptos
   .join("");
 
         document.getElementById("total-value").innerHTML = `
-          <div style="color:#3d0073"><strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
-          <div style="color:#000"><strong>Total Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong></div>
-          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};">Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</div>
+          <div style="color:#3d0073"><strong>Total Crypto Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
+          <div style="color:#000"><strong>Total Crypto Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong></div>
+          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};">Crypto Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</div>
         `;
 
         addGoldBox(totalPortfolioToman);
@@ -199,7 +199,7 @@ container.innerHTML = cryptos
         <div class="gold-box">
           <h2>Gold</h2>
           <input type="number" id="gold-price" placeholder="Price of Gold (Gram)" />
-          <button onclick="calculateGold(${totalPortfolioToman})">Calculate Gold Value</button>
+          <button onclick="calculateGold(${totalPortfolioToman})">Calculate Gold Portfolio</button>
           <div id="gold-result"></div>
         </div>`;
     }
@@ -210,14 +210,14 @@ container.innerHTML = cryptos
         return;
       }
       const goldPrice = parseFloat(goldPriceInput);
-      const goldValue = (goldPrice / 750) * 780 * 278.44;
+      const goldValue = (goldPrice / 750) * 750 * 278.44;
 
       const totalEarned = totalPortfolioToman + goldValue;
 
       const goldResult = document.getElementById("gold-result");
       goldResult.innerHTML = `
-        <p>Value of Your Gold: ${parseInt(goldValue).toLocaleString()}</p>
-        <p>Total You Earn: ${parseInt(totalEarned).toLocaleString()}</p>`;
+        <p>The Value of Gold: ${parseInt(goldValue).toLocaleString()}</p>
+        <p><strong>Total Portfolio: ${parseInt(totalEarned).toLocaleString()}</strong></p>`;
     }
   </script>
 </body>
