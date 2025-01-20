@@ -25,13 +25,13 @@
       display: inline-block;
       width: 100%;
     }
-    .crypto-container {
+    .crypto-container, #gold-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 5px; /* Space between boxes */
     }
-    .crypto {
+    .crypto, .gold-box {
       flex: 1 1 calc(33.33% - 20px); /* 3 boxes in a row on larger screens */
       max-width: 300px; /* Limit box width */
       margin: 10px;
@@ -43,6 +43,9 @@
       text-align: center;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s ease-in-out;
+    }
+    .gold-box {
+      border: 2px solid gold;
     }
     .crypto:hover {
       transform: translateY(-5px);
@@ -200,6 +203,43 @@
       } finally {
         loadingIndicator.style.display = "none"; // Hide loading message
       }
+    }
+           // Add Gold Box
+        addGoldBox(totalPortfolioToman);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
+      } finally {
+        loadingIndicator.style.display = "none";
+      }
+    }
+
+    function addGoldBox(totalPortfolioToman) {
+      const goldContainer = document.getElementById("gold-container");
+      goldContainer.innerHTML = `
+        <div class="gold-box">
+          <h2>Gold</h2>
+          <input type="number" id="gold-price" placeholder="Price of Gold (Gram)" />
+          <button onclick="calculateGold(${totalPortfolioToman})">Calculate Gold Value</button>
+          <div id="gold-result"></div>
+        </div>`;
+    }
+
+    function calculateGold(totalPortfolioToman) {
+      const goldPriceInput = document.getElementById("gold-price").value;
+      if (!goldPriceInput || goldPriceInput <= 0) {
+        alert("Please enter a valid gold price.");
+        return;
+      }
+      const goldPrice = parseFloat(goldPriceInput);
+      const goldValue = (goldPrice / 750) * 780 * 278.44;
+
+      const totalEarned = totalPortfolioToman + goldValue;
+
+      const goldResult = document.getElementById("gold-result");
+      goldResult.innerHTML = `
+        <p>Value of Your Gold: ${goldValue.toFixed(2).toLocaleString()}</p>
+        <p>Total You Earn: ${totalEarned.toFixed(2).toLocaleString()}</p>`;
     }
   </script>
 </body>
