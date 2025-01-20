@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Portfolio</title>
+  <title>My Crypto Portfolio</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -103,7 +103,7 @@
   </style>
 </head>
 <body>
-  <h1>My Portfolio</h1>
+  <h1>My Crypto Portfolio</h1>
 
   <div class="input-container">
     <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" /><br>
@@ -172,16 +172,16 @@ container.innerHTML = cryptos
         <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
         <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
         <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
-        <div class="balance-toman"><Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</div>
+        <div class="balance-toman">Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</div>
         <div class="value" style="color:${profitLossColor};">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
       </div>`;
   })
   .join("");
 
         document.getElementById("total-value").innerHTML = `
-          <div style="color: #3d0073"><strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
-          <div style="color: #000"><strong>Total Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong></div>
-          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit in 24h" : "Loss in 24h"} (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</strong></div>
+          <div><strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
+          <div><strong>Total Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong></div>
+          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};">Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</div>
         `;
 
         addGoldBox(totalPortfolioToman);
