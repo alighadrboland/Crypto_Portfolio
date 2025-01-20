@@ -181,7 +181,7 @@ container.innerHTML = cryptos
         document.getElementById("total-value").innerHTML = `
           <div style="color: #3d0073"><strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
           <div style="color: #000"><strong>Total Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong></div>
-          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</strong></div>
+          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit in 24h" : "Loss in 24h"} (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</strong></div>
         `;
 
         addGoldBox(totalPortfolioToman);
