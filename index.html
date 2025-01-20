@@ -138,42 +138,45 @@
         const cryptoResponse = await fetch(cryptoApiUrl);
         const cryptoData = await cryptoResponse.json();
 
-        let totalPortfolioUsd = 0;
         let totalPortfolioToman = 0;
         let totalProfitLossToman = 0;
+        let totalPortfolioUsd = 0;
+cryptos.forEach((crypto) => {
+  const priceUsd = cryptoData[crypto.apiId].usd;
+  totalPortfolioUsd += priceUsd * crypto.amount;
+});
 
-        const container = document.getElementById("crypto-container");
-        container.innerHTML = cryptos
-          .map((crypto) => {
-            const priceUsd = cryptoData[crypto.apiId].usd;
-            const priceToman = priceUsd * usdToToman;
-            const balanceUsd = priceUsd * crypto.amount;
-            const balanceToman = priceToman * crypto.amount;
+const container = document.getElementById("crypto-container");
+container.innerHTML = cryptos
+  .map((crypto) => {
+    const priceUsd = cryptoData[crypto.apiId].usd;
+    const priceToman = priceUsd * usdToToman;
+    const balanceUsd = priceUsd * crypto.amount;
+    const balanceToman = priceToman * crypto.amount;
 
-            const priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
-            const price24hAgoUsd = priceUsd / (1 + priceChange24h / 100);
-            const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
-            const profitLossToman = profitLossUsd * usdToToman;
+    const priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
+    const price24hAgoUsd = priceUsd / (1 + priceChange24h / 100);
+    const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
+    const profitLossToman = profitLossUsd * usdToToman;
 
-            totalPortfolioUsd += balanceUsd;
-            totalPortfolioToman += balanceToman;
-            totalProfitLossToman += profitLossToman;
+    totalPortfolioToman += balanceToman;
+    totalProfitLossToman += profitLossToman;
 
-            const profitLossColor = profitLossToman >= 0 ? "green" : "red";
-            const portfolioPercentage = ((balanceUsd / totalPortfolioUsd) * 100).toFixed(2);
+    const profitLossColor = profitLossToman >= 0 ? "green" : "red";
+    const portfolioPercentage = ((balanceUsd / totalPortfolioUsd) * 100).toFixed(2);
 
-            return `
-              <div class="crypto" style="border-color: ${profitLossColor};">
-                <h2>${crypto.name} (${portfolioPercentage}%)</h2>
-                <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
-                <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
-                <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
-                <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
-                <div class="balance-toman">Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</div>
-                <div class="value" style="color:${profitLossColor};">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
-              </div>`;
-          })
-          .join("");
+    return `
+      <div class="crypto" style="border-color: ${profitLossColor};">
+        <h2>${crypto.name} (${portfolioPercentage}%)</h2>
+        <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
+        <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
+        <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
+        <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
+        <div class="balance-toman">Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</div>
+        <div class="value" style="color:${profitLossColor};">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
+      </div>`;
+  })
+  .join("");
 
         document.getElementById("total-value").innerHTML = `
           <div><strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
