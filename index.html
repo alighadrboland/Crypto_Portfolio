@@ -36,14 +36,24 @@
       max-width: 300px;
       margin: 10px;
       padding: 15px;
-      border: 1px solid #ddd;
       border-radius: 5px;
       background: #fff;
       text-align: center;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+    .crypto:hover, .gold-box:hover {
+      transform: translateY(-5px);
     }
     .gold-box {
       border: 2px solid gold;
+    }
+    .price, .balance-usdt, .balance-toman {
+      font-size: 1em;
+    }
+    .balance-toman {
+      font-size: 1.1em;
+      font-weight: bold;
     }
     input[type="number"] {
       padding: 10px;
@@ -63,6 +73,17 @@
     button:hover {
       background-color: #2980b9;
     }
+    #loading {
+      font-size: 1.2em;
+      color: #555;
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .crypto, .gold-box {
+        flex: 1 1 100%;
+        max-width: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -74,7 +95,7 @@
   </div>
 
   <div id="loading">Fetching data...</div>
-  <div class="total-value" id="total-value"></div>
+  <div class="total-value" id="total-value-usdt"></div>
   <div class="crypto-container" id="crypto-container"></div>
   <div id="gold-container"></div>
 
@@ -108,6 +129,7 @@
         container.innerHTML = cryptos
           .map((crypto) => {
             const priceUsd = cryptoData[crypto.apiId].usd;
+            const priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
             const priceToman = priceUsd * usdToToman;
             const balanceUsd = priceUsd * crypto.amount;
             const balanceToman = priceToman * crypto.amount;
@@ -115,23 +137,27 @@
             totalPortfolioUsd += balanceUsd;
             totalPortfolioToman += balanceToman;
 
+            const borderColor = priceChange24h >= 0 ? "2px solid green" : "2px solid red";
+            const portfolioPercentage = ((balanceUsd / totalPortfolioUsd) * 100).toFixed(2);
+
             return `
-              <div class="crypto">
-                <h2>${crypto.name}</h2>
+              <div class="crypto" style="border: ${borderColor};">
+                <h2>${crypto.name} <span style="font-size: 0.6em;">(${portfolioPercentage}% of your portfolio)</span></h2>
                 <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
                 <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
                 <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
                 <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
-                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</strong></div>
+                <div class="balance-toman">Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</div>
               </div>`;
           })
           .join("");
 
-        const totalValueElement = document.getElementById("total-value");
-        const formattedTotalPortfolioToman = parseInt(totalPortfolioToman).toLocaleString();
-        totalValueElement.innerHTML = `<strong>Total Portfolio Value (Toman): ${formattedTotalPortfolioToman}</strong>`;
+        const totalValueUsdElement = document.getElementById("total-value-usdt");
+        totalValueUsdElement.innerHTML = `<strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong>`;
 
-        // Add Gold Box
+        const totalValueTomanElement = document.getElementById("total-value");
+        totalValueTomanElement.innerHTML = `<strong>Total Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong>`;
+
         addGoldBox(totalPortfolioToman);
       } catch (error) {
         console.error("Error fetching data:", error);
