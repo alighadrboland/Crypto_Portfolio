@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Crypto Portfolio</title>
+  <title>My Portfolio</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -103,7 +103,7 @@
   </style>
 </head>
 <body>
-  <h1>My Crypto Portfolio</h1>
+  <h1>My Portfolio</h1>
 
   <div class="input-container">
     <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" /><br>
@@ -179,7 +179,7 @@ container.innerHTML = cryptos
   .join("");
 
         document.getElementById("total-value").innerHTML = `
-          <div><strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
+          <div style="color:green"><strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
           <div><strong>Total Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong></div>
           <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};">Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</div>
         `;
