@@ -29,11 +29,11 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 5px;
+      gap: 5px; /* Space between boxes */
     }
     .crypto {
-      flex: 1 1 calc(33.33% - 20px);
-      max-width: 300px;
+      flex: 1 1 calc(33.33% - 20px); /* 3 boxes in a row on larger screens */
+      max-width: 300px; /* Limit box width */
       margin: 10px;
       padding: 15px;
       color: #3d0073;
@@ -54,38 +54,47 @@
       font-size: 1em;
       padding: 5px 0;
     }
+    .balance-usdt {
+      font-size: 1em;
+      color: #0404b3; /* Dark blue for Balance (USDT) */
+    }
+    .balance-toman {
+      font-size: 1.1em;
+      color: #000; /* Black for Balance (Toman) */
+    }
+    .input-container {
+      margin-bottom: 20px;
+    }
+    input[type="number"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 200px;
+    }
     button {
-      padding: 10px 20px;
-      font-size: 1.2em;
+      padding: 10px 28px;
+      font-size: 1.3em;
       color: white;
       background-color: #3498db;
       border: none;
-      border-radius: 5px;
+      border-radius: 7px;
       cursor: pointer;
-      margin: 10px;
-      width: 200px;
+      margin-top: 20px;
     }
     button:hover {
       background-color: #2980b9;
     }
-    .button-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
     #loading {
       font-size: 1.2em;
       color: #555;
-      display: none;
+      display: none; /* Hidden by default */
     }
     @media (max-width: 768px) {
-      .crypto {
-        flex: 1 1 100%;
-        max-width: none;
+      .total-value div {
+        display: block; /* Values go to next row on smaller screens */
       }
-      .button-container {
-        flex-direction: column;
-        gap: 10px;
+      .crypto {
+        flex: 1 1 100%; /* One column on smaller screens */
+        max-width: none;
       }
     }
   </style>
@@ -94,103 +103,103 @@
   <h1>My Crypto Portfolio</h1>
 
   <div class="input-container">
-    <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" />
-  </div>
-
-  <div class="button-container">
+    <input type="number" id="exchange-rate" placeholder="Enter USDT in Toman" /><br>
     <button onclick="fetchData()">Calculate Portfolio</button>
-    <button onclick="addGoldBox()">Add Gold</button>
   </div>
 
   <div id="loading">Fetching data...</div>
-  <div class="total-value" id="total-value"></div>
+  <div class="total-value" id="total-value">
+  </div>
   <div class="crypto-container" id="crypto-container"></div>
-
   <script>
     const cryptos = [
       { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.13463035 },
       { name: "Ethereum", symbol: "ETH", apiId: "ethereum", amount: 0.37546643 },
       { name: "Major", symbol: "MAJOR", apiId: "major", amount: 161.32985346 },
-      { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 },
+      { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 }
     ];
 
     async function fetchData() {
       const loadingIndicator = document.getElementById("loading");
-      loadingIndicator.style.display = "block";
-
+      loadingIndicator.style.display = "block"; // Show loading message
       try {
         const exchangeRateInput = document.getElementById("exchange-rate").value;
         if (!exchangeRateInput || exchangeRateInput <= 0) {
           alert("Please enter a valid USD to IRR exchange rate.");
           return;
         }
-
         const usdToToman = parseFloat(exchangeRateInput);
-        const apiUrl =
-          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,major,filecoin&vs_currencies=usd&include_24hr_change=true";
-        const response = await fetch(apiUrl);
-        const data = await response.json();
 
-        let totalUsd = 0;
-        let totalToman = 0;
+        const cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,major,filecoin&vs_currencies=usd&include_24hr_change=true";
+        const cryptoResponse = await fetch(cryptoApiUrl);
+        const cryptoData = await cryptoResponse.json();
+
+        let totalPortfolioUsd = 0;
+        let totalPortfolioToman = 0;
+
+        // Calculate total portfolio value
+        cryptos.forEach((crypto) => {
+          const priceUsd = cryptoData[crypto.apiId].usd;
+          const balanceUsd = priceUsd * crypto.amount;
+          totalPortfolioUsd += balanceUsd;
+        });
+
+        let totalProfitLossToman = 0;
 
         const container = document.getElementById("crypto-container");
         container.innerHTML = cryptos
           .map((crypto) => {
-            const priceUsd = data[crypto.apiId].usd;
+            const priceUsd = cryptoData[crypto.apiId].usd;
             const priceToman = priceUsd * usdToToman;
             const balanceUsd = priceUsd * crypto.amount;
             const balanceToman = priceToman * crypto.amount;
 
-            totalUsd += balanceUsd;
-            totalToman += balanceToman;
+            const priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
+            const price24hAgoUsd = priceUsd / (1 + priceChange24h / 100);
+            const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
+            const profitLossToman = profitLossUsd * usdToToman;
+
+            totalPortfolioToman += balanceToman;
+            totalProfitLossToman += profitLossToman;
+
+            const profitLossColor = profitLossToman >= 0 ? "green" : "red";
+            const borderColor = profitLossToman >= 0 ? "2px solid green" : "2px solid red";
+
+            // Calculate portfolio percentage
+            const portfolioPercentage = ((balanceUsd / totalPortfolioUsd) * 100).toFixed(2);
 
             return `
-              <div class="crypto">
-                <h2>${crypto.name} (${crypto.symbol})</h2>
-                <div>Price (USDT): $${priceUsd.toFixed(2)}</div>
-                <div>Price (Toman): ${Math.round(priceToman).toLocaleString()}</div>
-                <div>Amount: ${crypto.amount}</div>
-                <div>Balance (USDT): $${balanceUsd.toFixed(2)}</div>
-                <div>Balance (Toman): ${Math.round(balanceToman).toLocaleString()}</div>
+              <div class="crypto" style="border: ${borderColor};">
+                <h2>${crypto.name} <span style="font-size: 0.6em;">( ${portfolioPercentage}% of your portfolio )</span></h2>
+                <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
+                <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
+                <p </p>
+                <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
+                <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
+                <p </p>
+                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</strong></div>
+                <div class="value" style="color:${profitLossColor}">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
               </div>`;
           })
           .join("");
 
-        document.getElementById("total-value").innerHTML = `
-          Total Portfolio Value: $${totalUsd.toFixed(2)} (Toman: ${Math.round(totalToman).toLocaleString()})
-        `;
+        const totalValueElement = document.getElementById("total-value");
+        const formattedTotalPortfolioToman = parseInt(totalPortfolioToman).toLocaleString();
+        const formattedTotalProfitLossToman = parseInt(totalProfitLossToman).toLocaleString();
+
+        const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
+
+        totalValueElement.innerHTML = `
+          <div><strong style="color:#3d0073;">Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
+          <p </p>
+          <div><strong style="color:#0404b3;">Total Portfolio Value (Toman): ${formattedTotalPortfolioToman}</strong></div>
+          <div style="color:${profitLossColor};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${formattedTotalProfitLossToman}</strong></div>`;
       } catch (error) {
         console.error("Error fetching data:", error);
+        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
       } finally {
-        loadingIndicator.style.display = "none";
+        loadingIndicator.style.display = "none"; // Hide loading message
       }
-    }
-
-    function addGoldBox() {
-      const container = document.getElementById("crypto-container");
-      const goldBox = document.createElement("div");
-      goldBox.className = "crypto";
-      goldBox.innerHTML = `
-        <h2>Gold</h2>
-        <input type="number" id="gold-price" placeholder="Gold price (per gram)" />
-        <button onclick="calculateGoldValue(this)">Calculate Gold Value</button>
-        <div id="gold-result"></div>
-      `;
-      container.appendChild(goldBox);
-    }
-
-    function calculateGoldValue(button) {
-      const box = button.parentElement;
-      const priceInput = box.querySelector("#gold-price").value;
-
-      if (!priceInput || priceInput <= 0) {
-        alert("Please enter a valid gold price.");
-        return;
-      }
-
-      const value = parseFloat(priceInput) * 1.5; // Example multiplier
-      box.querySelector("#gold-result").innerText = `Gold Value: ${value.toFixed(2)}`;
     }
   </script>
 </body>
