@@ -29,11 +29,11 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 5px; /* Space between boxes */
+      gap: 5px;
     }
     .crypto, .gold-box {
-      flex: 1 1 calc(33.33% - 20px); /* 3 boxes in a row on larger screens */
-      max-width: 300px; /* Limit box width */
+      flex: 1 1 calc(33.33% - 20px);
+      max-width: 300px;
       margin: 10px;
       padding: 15px;
       color: #3d0073;
@@ -59,11 +59,11 @@
     }
     .balance-usdt {
       font-size: 1em;
-      color: #0404b3; /* Dark blue for Balance (USDT) */
+      color: #0404b3;
     }
     .balance-toman {
       font-size: 1.1em;
-      color: #000; /* Black for Balance (Toman) */
+      color: #000;
     }
     .input-container {
       margin-bottom: 20px;
@@ -89,14 +89,14 @@
     #loading {
       font-size: 1.2em;
       color: #555;
-      display: none; /* Hidden by default */
+      display: none;
     }
     @media (max-width: 768px) {
       .total-value div {
-        display: block; /* Values go to next row on smaller screens */
+        display: block;
       }
       .crypto {
-        flex: 1 1 100%; /* One column on smaller screens */
+        flex: 1 1 100%;
         max-width: none;
       }
     }
@@ -111,9 +111,10 @@
   </div>
 
   <div id="loading">Fetching data...</div>
-  <div class="total-value" id="total-value">
-  </div>
+  <div class="total-value" id="total-value"></div>
   <div class="crypto-container" id="crypto-container"></div>
+  <div id="gold-container"></div> <!-- Gold container added here -->
+
   <script>
     const cryptos = [
       { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.13463035 },
@@ -124,7 +125,7 @@
 
     async function fetchData() {
       const loadingIndicator = document.getElementById("loading");
-      loadingIndicator.style.display = "block"; // Show loading message
+      loadingIndicator.style.display = "block";
       try {
         const exchangeRateInput = document.getElementById("exchange-rate").value;
         if (!exchangeRateInput || exchangeRateInput <= 0) {
@@ -139,14 +140,6 @@
 
         let totalPortfolioUsd = 0;
         let totalPortfolioToman = 0;
-
-        // Calculate total portfolio value
-        cryptos.forEach((crypto) => {
-          const priceUsd = cryptoData[crypto.apiId].usd;
-          const balanceUsd = priceUsd * crypto.amount;
-          totalPortfolioUsd += balanceUsd;
-        });
-
         let totalProfitLossToman = 0;
 
         const container = document.getElementById("crypto-container");
@@ -162,49 +155,32 @@
             const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
             const profitLossToman = profitLossUsd * usdToToman;
 
+            totalPortfolioUsd += balanceUsd;
             totalPortfolioToman += balanceToman;
             totalProfitLossToman += profitLossToman;
 
             const profitLossColor = profitLossToman >= 0 ? "green" : "red";
-            const borderColor = profitLossToman >= 0 ? "2px solid green" : "2px solid red";
-
-            // Calculate portfolio percentage
             const portfolioPercentage = ((balanceUsd / totalPortfolioUsd) * 100).toFixed(2);
 
             return `
-              <div class="crypto" style="border: ${borderColor};">
-                <h2>${crypto.name} <span style="font-size: 0.6em;">( ${portfolioPercentage}% of your portfolio )</span></h2>
+              <div class="crypto" style="border-color: ${profitLossColor};">
+                <h2>${crypto.name} (${portfolioPercentage}%)</h2>
                 <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
                 <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
-                <p </p>
                 <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
                 <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
-                <p </p>
-                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</strong></div>
-                <div class="value" style="color:${profitLossColor}">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
+                <div class="balance-toman">Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</div>
+                <div class="value" style="color:${profitLossColor};">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
               </div>`;
           })
           .join("");
 
-        const totalValueElement = document.getElementById("total-value");
-        const formattedTotalPortfolioToman = parseInt(totalPortfolioToman).toLocaleString();
-        const formattedTotalProfitLossToman = parseInt(totalProfitLossToman).toLocaleString();
+        document.getElementById("total-value").innerHTML = `
+          <div><strong>Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
+          <div><strong>Total Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong></div>
+          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};">Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</div>
+        `;
 
-        const profitLossColor = totalProfitLossToman >= 0 ? "green" : "red";
-
-        totalValueElement.innerHTML = `
-          <div><strong style="color:#3d0073;">Total Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</strong></div>
-          <p </p>
-          <div><strong style="color:#0404b3;">Total Portfolio Value (Toman): ${formattedTotalPortfolioToman}</strong></div>
-          <div style="color:${profitLossColor};"><strong>Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${formattedTotalProfitLossToman}</strong></div>`;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("total-value").innerHTML = "Error fetching portfolio data.";
-      } finally {
-        loadingIndicator.style.display = "none"; // Hide loading message
-      }
-    }
-           // Add Gold Box
         addGoldBox(totalPortfolioToman);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -224,7 +200,6 @@
           <div id="gold-result"></div>
         </div>`;
     }
-
     function calculateGold(totalPortfolioToman) {
       const goldPriceInput = document.getElementById("gold-price").value;
       if (!goldPriceInput || goldPriceInput <= 0) {
