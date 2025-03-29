@@ -31,7 +31,7 @@
       justify-content: center;
       gap: 5px;
     }
-    .crypto, .gold-box {
+    .crypto {
       flex: 1 1 calc(33.33% - 20px);
       max-width: 300px;
       margin: 10px;
@@ -188,6 +188,33 @@ container.innerHTML = cryptos
       } finally {
         loadingIndicator.style.display = "none";
       }
+    }
+
+    function addGoldBox(totalPortfolioToman) {
+      const goldContainer = document.getElementById("gold-container");
+      goldContainer.innerHTML = `
+        <div class="gold-box">
+          <h2>Gold</h2>
+          <input type="number" id="gold-price" placeholder="Price of Gold (Gram)" />
+          <button onclick="calculateGold(${totalPortfolioToman})">Calculate Gold Portfolio</button>
+          <div id="gold-result"></div>
+        </div>`;
+    }
+    function calculateGold(totalPortfolioToman) {
+      const goldPriceInput = document.getElementById("gold-price").value;
+      if (!goldPriceInput || goldPriceInput <= 0) {
+        alert("Please enter a valid gold price.");
+        return;
+      }
+      const goldPrice = parseFloat(goldPriceInput);
+      const goldValue = ((goldPrice / 750) * 750 * 278.44) + 600000000;
+
+      const totalEarned = totalPortfolioToman + goldValue;
+
+      const goldResult = document.getElementById("gold-result");
+      goldResult.innerHTML = `
+        <p>The Value of Gold: ${parseInt(goldValue).toLocaleString()}</p>
+        <p style="color:#000"><strong>Total Portfolio: ${parseInt(totalEarned).toLocaleString()}</strong></p>`;
     }
   </script>
 </body>
