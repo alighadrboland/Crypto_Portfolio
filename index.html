@@ -136,7 +136,7 @@
         }
 
         const data = await response.json();
-        const priceUsdt = data["usdt"]; // استفاده از "تتر" به عنوان کلید
+        const priceUsdt = data["Tether"]; // استفاده از "تتر" به عنوان کلید
 
         if (!priceUsdt) {
           throw new Error("Price for USDT not found in the JSON.");
