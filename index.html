@@ -1,214 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crypto Portfolio</title>
+  <meta charset="UTF-8">
+  <title>لیست فروشگاه‌ها</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f9f9f9;
+      font-family: "Vazirmatn", sans-serif;
+      direction: rtl;
       margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      color: #000;
-    }
-    .total-value {
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 1.3em;
-      color: #2c3e50;
+      padding: 0;
       background: #f9f9f9;
-      border-radius: 8px;
-      display: inline-block;
-      width: 100%;
     }
-    .crypto-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 5px;
-    }
-    .crypto {
-      flex: 1 1 calc(33.33% - 20px);
-      max-width: 300px;
-      margin: 10px;
-      padding: 15px;
-      color: #3d0073;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background: #fff;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease-in-out;
-    }
-    .crypto:hover {
-      transform: translateY(-5px);
-    }
-    .crypto h2 {
-      margin: 5px 0;
-    }
-    .price, .value {
-      font-size: 1em;
-      padding: 5px 0;
-    }
-    .balance-usdt {
-      font-size: 1em;
-      color: #0404b3;
-    }
-    .balance-toman {
-      font-size: 1.1em;
-      color: #000;
-    }
-    .input-container {
-      margin-bottom: 20px;
-    }
-    input[type="number"] {
-      padding: 10px;
-      font-size: 1em;
-      width: 200px;
-    }
-    button {
-      padding: 10px 28px;
-      font-size: 1.3em;
+
+    header {
+      background: #2c3e50;
       color: white;
-      background-color: #3498db;
-      border: none;
-      border-radius: 7px;
-      cursor: pointer;
-      margin-top: 20px;
+      padding: 20px;
+      text-align: center;
     }
-    button:hover {
-      background-color: #2980b9;
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    #loading {
-      font-size: 1.2em;
-      color: #555;
-      display: none;
-    }
-    #usdt-price {
-      font-size: 1.2em;
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
       margin-bottom: 20px;
-      color: #3d0073;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
-    @media (max-width: 768px) {
-      .total-value div {
-        display: block;
-      }
-      .crypto {
-        flex: 1 1 100%;
-        max-width: none;
-      }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: right;
+    }
+
+    th {
+      background-color: #34495e;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
     }
   </style>
 </head>
 <body>
-  <h1>Crypto Portfolio</h1>
 
-  <div id="usdt-price">Loading USDT price...</div>
+  <header>
+    <h1>فروشگاه‌های منتخب</h1>
+  </header>
 
-  <div id="loading">Fetching data...</div>
-  <div class="total-value" id="total-value"></div>
-  <div class="crypto-container" id="crypto-container"></div>
+  <div class="container">
+    <input type="text" id="searchInput" placeholder="جستجو بر اساس شهرستان..." onkeyup="filterTable()">
+
+    <table id="storeTable">
+      <thead>
+        <tr>
+          <th>شهرستان</th>
+          <th>نام فروشگاه</th>
+          <th>آدرس</th>
+          <th>شماره تماس</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>بوشهر</td>
+          <td>فروشگاه تکنوپارک</td>
+          <td>خیابان شهید عاشوری، پلاک ۱۰</td>
+          <td>077-33334444</td>
+        </tr>
+        <tr>
+          <td>تهران</td>
+          <td>فروشگاه دیجیتال مارکت</td>
+          <td>بلوار کشاورز، پلاک ۱۲۳</td>
+          <td>021-88990011</td>
+        </tr>
+        <tr>
+          <td>شیراز</td>
+          <td>فروشگاه پارس کالا</td>
+          <td>خیابان زند، مرکز تجاری ستاره</td>
+          <td>071-32223344</td>
+        </tr>
+        <tr>
+          <td>بوشهر</td>
+          <td>فروشگاه موبایل مرکزی</td>
+          <td>چهارراه شهدا، پاساژ الماس</td>
+          <td>077-33335555</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <script>
-    const cryptos = [
-      { name: "Bitcoin", symbol: "BTC", apiId: "bitcoin", amount: 0.04162597 },
-      { name: "Ethereum", symbol: "ETH", apiId: "ethereum", amount: 0.37546643 },
-      { name: "Major", symbol: "MAJOR", apiId: "major", amount: 161.32985346 },
-      { name: "Filecoin", symbol: "FIL", apiId: "filecoin", amount: 8.23251356 },
-      { name: "Gold", symbol: "GOLD", apiId: "tether-gold", amount: 0.051 }
-    ];
+    function filterTable() {
+      const input = document.getElementById("searchInput");
+      const filter = input.value.toUpperCase();
+      const table = document.getElementById("storeTable");
+      const tr = table.getElementsByTagName("tr");
 
-    async function fetchData() {
-      const loadingIndicator = document.getElementById("loading");
-      loadingIndicator.style.display = "block";
-
-      try {
-        // دریافت قیمت تتر از لینک
-        const response = await fetch("https://raw.githubusercontent.com/CertMusashi/Chande-api/refs/heads/main/arz.json?");
-
-        // بررسی وضعیت درخواست
-        if (!response.ok) {
-          throw new Error("Failed to fetch data from the server.");
+      for (let i = 1; i < tr.length; i++) {
+        const td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          const txtValue = td.textContent || td.innerText;
+          tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
         }
-
-        const data = await response.json();
-        const priceUsdt = data["Tether"]; // استفاده از "تتر" به عنوان کلید
-
-        if (!priceUsdt) {
-          throw new Error("Price for USDT not found in the JSON.");
-        }
-
-        const usdToToman = priceUsdt; // استفاده از قیمت تتر برای تبدیل به تومان
-
-        // نمایش قیمت تتر در بالای صفحه
-        document.getElementById("usdt-price").textContent = `Price of 1 USDT: ${priceUsdt.toLocaleString()} USD`;
-
-        // دریافت قیمت ارزهای دیگر از CoinGecko
-        const cryptoApiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,major,filecoin,tether-gold&vs_currencies=usd&include_24hr_change=true";
-        const cryptoResponse = await fetch(cryptoApiUrl);
-        const cryptoData = await cryptoResponse.json();
-
-        let totalPortfolioToman = 0;
-        let totalProfitLossToman = 0;
-        let totalPortfolioUsd = 0;
-        cryptos.forEach((crypto) => {
-          const priceUsd = cryptoData[crypto.apiId].usd;
-          totalPortfolioUsd += priceUsd * crypto.amount;
-        });
-
-        const container = document.getElementById("crypto-container");
-        container.innerHTML = cryptos
-          .map((crypto) => {
-            const priceUsd = cryptoData[crypto.apiId].usd;
-            const priceToman = priceUsd * usdToToman;
-            const balanceUsd = priceUsd * crypto.amount;
-            const balanceToman = priceToman * crypto.amount;
-
-            const priceChange24h = cryptoData[crypto.apiId].usd_24h_change;
-            const price24hAgoUsd = priceUsd / (1 + priceChange24h / 100);
-            const profitLossUsd = (priceUsd - price24hAgoUsd) * crypto.amount;
-            const profitLossToman = profitLossUsd * usdToToman;
-
-            totalPortfolioToman += balanceToman;
-            totalProfitLossToman += profitLossToman;
-
-            const profitLossColor = profitLossToman >= 0 ? "green" : "red";
-            const portfolioPercentage = ((balanceUsd / totalPortfolioUsd) * 100).toFixed(2);
-            const isGold = crypto.name.toLowerCase() === "gold";
-            const boxBackground = isGold ? "linear-gradient(to right, #f1c40f, #f39c12)" : "#fff";
-            const textColor = isGold ? "#000" : "#3d0073";
-
-            return `
-              <div class="crypto" style="border-color: ${profitLossColor}; background: ${boxBackground}; color: ${textColor};">
-                <h2>${crypto.name} (${portfolioPercentage}%)</h2>
-                <div class="price">Price (USDT): $${priceUsd.toLocaleString()}</div>
-                <div class="price">Price (Toman): ${parseInt(priceToman).toLocaleString()}</div>
-                <div class="balance-usdt">You Own: ${crypto.amount} ${crypto.symbol}</div>
-                <div class="balance-usdt">Balance (USDT): $${parseInt(balanceUsd).toLocaleString()}</div>
-                <div class="balance-toman"><strong>Balance (Toman): ${parseInt(balanceToman).toLocaleString()}</strong></div>
-                <div class="value" style="color:${profitLossColor};">${profitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(profitLossToman).toLocaleString()}</div>
-              </div>`;
-          })
-          .join("");
-
-        document.getElementById("total-value").innerHTML = `
-          <div style="color:#3d0073">Total Crypto Portfolio Value (USDT): $${parseInt(totalPortfolioUsd).toLocaleString()}</div>
-          <div style="color:#000"><strong>Total Crypto Portfolio Value (Toman): ${parseInt(totalPortfolioToman).toLocaleString()}</strong></div>
-          <div style="color:${totalProfitLossToman >= 0 ? "green" : "red"};">Crypto Portfolio ${totalProfitLossToman >= 0 ? "Profit" : "Loss"} in 24h (Toman): ${parseInt(totalProfitLossToman).toLocaleString()}</div>
-        `;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("total-value").innerHTML = `Error: ${error.message}`;
-      } finally {
-        loadingIndicator.style.display = "none";
       }
     }
-
-    window.onload = fetchData;
   </script>
+
 </body>
 </html>
