@@ -1,122 +1,89 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="UTF-8">
-  <title>لیست فروشگاه‌ها</title>
+  <meta charset="UTF-8" />
+  <title>فروشگاه‌های منتخب</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      font-family: "Vazirmatn", sans-serif;
-      direction: rtl;
-      margin: 0;
-      padding: 0;
-      background: #f9f9f9;
-    }
-
-    header {
-      background: #2c3e50;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: right;
-    }
-
-    th {
-      background-color: #34495e;
-      color: white;
-    }
-
-    tr:hover {
-      background-color: #f1f1f1;
-    }
+    body { direction: rtl; font-family: "Vazirmatn", sans-serif; }
   </style>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800">
 
-  <header>
-    <h1>فروشگاه‌های منتخب</h1>
+  <header class="bg-blue-800 text-white py-5 text-center shadow">
+    <h1 class="text-2xl font-bold">فروشگاه‌های منتخب</h1>
   </header>
 
-  <div class="container">
-    <input type="text" id="searchInput" placeholder="جستجو بر اساس شهرستان..." onkeyup="filterTable()">
+  <main class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+      <input id="searchCity" onkeyup="filterTable()" type="text"
+        class="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="جستجو بر اساس شهرستان" />
+      <input id="searchCategory" onkeyup="filterTable()" type="text"
+        class="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="جستجو بر اساس صنف" />
+    </div>
 
-    <table id="storeTable">
-      <thead>
-        <tr>
-          <th>شهرستان</th>
-          <th>نام فروشگاه</th>
-          <th>آدرس</th>
-          <th>شماره تماس</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>بوشهر</td>
-          <td>فروشگاه تکنوپارک</td>
-          <td>خیابان شهید عاشوری، پلاک ۱۰</td>
-          <td>077-33334444</td>
-        </tr>
-        <tr>
-          <td>تهران</td>
-          <td>فروشگاه دیجیتال مارکت</td>
-          <td>بلوار کشاورز، پلاک ۱۲۳</td>
-          <td>021-88990011</td>
-        </tr>
-        <tr>
-          <td>شیراز</td>
-          <td>فروشگاه پارس کالا</td>
-          <td>خیابان زند، مرکز تجاری ستاره</td>
-          <td>071-32223344</td>
-        </tr>
-        <tr>
-          <td>بوشهر</td>
-          <td>فروشگاه موبایل مرکزی</td>
-          <td>چهارراه شهدا، پاساژ الماس</td>
-          <td>077-33335555</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="px-4 py-3 text-right">شهرستان</th>
+            <th class="px-4 py-3 text-right">نام فروشگاه</th>
+            <th class="px-4 py-3 text-right">صنف</th>
+            <th class="px-4 py-3 text-right">آدرس</th>
+            <th class="px-4 py-3 text-right">شماره تماس</th>
+          </tr>
+        </thead>
+        <tbody id="storeTable" class="bg-white divide-y divide-gray-100">
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">بوشهر</td>
+            <td class="px-4 py-3">فروشگاه تکنوپارک</td>
+            <td class="px-4 py-3">الکترونیک</td>
+            <td class="px-4 py-3">خیابان شهید عاشوری، پلاک ۱۰</td>
+            <td class="px-4 py-3">077-33334444</td>
+          </tr>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">تهران</td>
+            <td class="px-4 py-3">دیجیتال مارکت</td>
+            <td class="px-4 py-3">کامپیوتر</td>
+            <td class="px-4 py-3">بلوار کشاورز، پلاک ۱۲۳</td>
+            <td class="px-4 py-3">021-88990011</td>
+          </tr>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">شیراز</td>
+            <td class="px-4 py-3">پارس کالا</td>
+            <td class="px-4 py-3">لوازم خانگی</td>
+            <td class="px-4 py-3">خیابان زند، مرکز تجاری ستاره</td>
+            <td class="px-4 py-3">071-32223344</td>
+          </tr>
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">بوشهر</td>
+            <td class="px-4 py-3">موبایل مرکزی</td>
+            <td class="px-4 py-3">موبایل</td>
+            <td class="px-4 py-3">چهارراه شهدا، پاساژ الماس</td>
+            <td class="px-4 py-3">077-33335555</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
 
   <script>
     function filterTable() {
-      const input = document.getElementById("searchInput");
-      const filter = input.value.toUpperCase();
-      const table = document.getElementById("storeTable");
-      const tr = table.getElementsByTagName("tr");
+      const city = document.getElementById("searchCity").value.toUpperCase();
+      const category = document.getElementById("searchCategory").value.toUpperCase();
+      const rows = document.getElementById("storeTable").getElementsByTagName("tr");
 
-      for (let i = 1; i < tr.length; i++) {
-        const td = tr[i].getElementsByTagName("td")[0];
-        if (td) {
-          const txtValue = td.textContent || td.innerText;
-          tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
-        }
+      for (let i = 0; i < rows.length; i++) {
+        const cityCell = rows[i].getElementsByTagName("td")[0];
+        const categoryCell = rows[i].getElementsByTagName("td")[2];
+
+        const matchesCity = cityCell && cityCell.textContent.toUpperCase().includes(city);
+        const matchesCategory = categoryCell && categoryCell.textContent.toUpperCase().includes(category);
+
+        rows[i].style.display = (matchesCity && matchesCategory) ? "" : "none";
       }
     }
   </script>
