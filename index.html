@@ -11,11 +11,15 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
+  <!-- Header -->
   <header class="bg-blue-800 text-white py-5 text-center shadow">
     <h1 class="text-2xl font-bold">فروشگاه‌های منتخب</h1>
   </header>
 
-  <main class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+
+    <!-- Search Filters -->
     <div class="flex flex-col sm:flex-row gap-4 mb-6">
       <input id="searchCity" onkeyup="filterTable()" type="text"
         class="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -25,15 +29,16 @@
         placeholder="جستجو بر اساس صنف" />
     </div>
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full table-auto border border-gray-200 rounded-lg overflow-hidden">
+    <!-- Table Wrapper -->
+    <div class="w-full overflow-x-auto rounded-lg border border-gray-200">
+      <table class="min-w-full table-auto text-sm text-right">
         <thead class="bg-blue-600 text-white">
           <tr>
-            <th class="px-4 py-3 text-right">شهرستان</th>
-            <th class="px-4 py-3 text-right">نام فروشگاه</th>
-            <th class="px-4 py-3 text-right">صنف</th>
-            <th class="px-4 py-3 text-right">آدرس</th>
-            <th class="px-4 py-3 text-right">شماره تماس</th>
+            <th class="px-4 py-3">شهرستان</th>
+            <th class="px-4 py-3">نام فروشگاه</th>
+            <th class="px-4 py-3">صنف</th>
+            <th class="px-4 py-3">آدرس</th>
+            <th class="px-4 py-3">شماره تماس</th>
           </tr>
         </thead>
         <tbody id="storeTable" class="bg-white divide-y divide-gray-100">
@@ -70,6 +75,7 @@
     </div>
   </main>
 
+  <!-- Filter Script -->
   <script>
     function filterTable() {
       const city = document.getElementById("searchCity").value.toUpperCase();
