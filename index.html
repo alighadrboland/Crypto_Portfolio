@@ -114,8 +114,9 @@
       const modal = document.getElementById("modal");
       const content = document.getElementById("modalContent");
       content.innerHTML = `
-        <div class="aspect-w-16 aspect-h-9">
-          <iframe class="w-full h-96 rounded-lg" src="https://www.aparat.com/video/video/embed/videohash/blep93a/vt/frame" 
+        <div class="relative w-full" style="padding-bottom: 56.25%;">
+          <iframe class="absolute top-0 left-0 w-full h-full rounded-lg"
+            src="https://www.aparat.com/video/video/embed/videohash/blep93a/vt/frame"
             allowfullscreen frameborder="0"></iframe>
         </div>
       `;
