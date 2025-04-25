@@ -1,103 +1,111 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>فروشگاه‌های منتخب پذیرنده کارت رفاهی در استان بوشهر</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لیست فروشگاه‌ها</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { direction: rtl; font-family: "Vazirmatn", sans-serif; }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 text-gray-800 px-4 py-6">
 
-  <!-- Header -->
-  <header class="bg-blue-800 text-white py-5 text-center shadow">
-    <h1 class="text-1xl font-bold">فروشگاه‌های منتخب پذیرنده کارت رفاهی در استان بوشهر</h1>
-  </header>
+  <!-- عنوان -->
+  <div class="flex justify-center mb-6">
+    <h1 class="text-2xl font-bold text-blue-700">لیست فروشگاه‌ها</h1>
+  </div>
 
-  <!-- Main Content -->
-  <main class="max-w-6xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-
-    <!-- Search Filters -->
-    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+  <!-- جستجوها و دکمه‌ها -->
+  <div class="max-w-6xl mx-auto mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    
+    <!-- شهر -->
+    <div class="flex items-center space-x-2 space-x-reverse">
       <input id="searchCity" onkeyup="filterTable()" type="text"
-        class="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="جستجو بر اساس شهرستان" />
+        class="flex-grow border rounded-md px-4 py-2 w-2/3" placeholder="جستجو بر اساس شهر" />
+      <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow">
+        معرفی کارت رفاهی
+      </button>
+    </div>
+
+    <!-- صنف -->
+    <div class="flex items-center space-x-2 space-x-reverse">
       <input id="searchCategory" onkeyup="filterTable()" type="text"
-        class="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="جستجو بر اساس صنف" />
+        class="flex-grow border rounded-md px-4 py-2 w-2/3" placeholder="جستجو بر اساس صنف" />
+      <button class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow">
+        مهلت استفاده و مدت بازپرداخت
+      </button>
     </div>
 
-    <!-- Table Wrapper -->
-    <div class="w-full overflow-x-auto rounded-lg border border-gray-200">
-      <table class="min-w-full table-auto text-sm text-center">
-        <thead class="bg-blue-600 text-white">
-          <tr>
-            <th class="px-4 py-3 min-w-[100px]">شهرستان</th>
-            <th class="px-4 py-3 min-w-[140px]">نام فروشگاه</th>
-            <th class="px-4 py-3 min-w-[120px]">صنف</th>
-            <th class="px-4 py-3 min-w-[200px]">آدرس</th>
-            <th class="px-4 py-3 min-w-[140px]">شماره تماس</th>
-          </tr>
-        </thead>
-        <tbody id="storeTable" class="bg-white divide-y divide-gray-100">
-          <tr class="hover:bg-gray-50">
-            <td class="px-4 py-3">بوشهر</td>
-            <td class="px-4 py-3">فروشگاه تکنوپارک</td>
-            <td class="px-4 py-3">الکترونیک</td>
-            <td class="px-4 py-3">خیابان شهید عاشوری، پلاک ۱۰</td>
-            <td class="px-4 py-3">
-              <a href="tel:07733334444" class="text-blue-600 hover:underline">077-33334444</a>
-            </td>
-         </tr>
-         <tr class="hover:bg-gray-50">
-            <td class="px-4 py-3">تهران</td>
-            <td class="px-4 py-3">دیجیتال مارکت</td>
-            <td class="px-4 py-3">کامپیوتر</td>
-            <td class="px-4 py-3">بلوار کشاورز، پلاک ۱۲۳</td>
-            <td class="px-4 py-3">
-              <a href="tel:02188990011" class="text-blue-600 hover:underline">021-88990011</a>
-         </td>
-         </tr>
-            <tr class="hover:bg-gray-50">
-            <td class="px-4 py-3">شیراز</td>
-            <td class="px-4 py-3">پارس کالا</td>
-            <td class="px-4 py-3">لوازم خانگی</td>
-            <td class="px-4 py-3">خیابان زند، مرکز تجاری ستاره</td>
-            <td class="px-4 py-3">
-              <a href="tel:07132223344" class="text-blue-600 hover:underline">071-32223344</a>
-         </td>
-         </tr>
-            <tr class="hover:bg-gray-50">
-            <td class="px-4 py-3">بوشهر</td>
-            <td class="px-4 py-3">موبایل مرکزی</td>
-            <td class="px-4 py-3">موبایل</td>
-            <td class="px-4 py-3">چهارراه شهدا، پاساژ الماس</td>
-            <td class="px-4 py-3">
-              <a href="tel:07733335555" class="text-blue-600 hover:underline">077-33335555</a>
-         </td>
-       </tr>
-  </tbody>
-      </table>
+    <!-- نام فروشگاه -->
+    <div class="flex items-center space-x-2 space-x-reverse">
+      <input id="searchStore" onkeyup="filterTable()" type="text"
+        class="flex-grow border rounded-md px-4 py-2 w-2/3" placeholder="جستجو بر اساس نام فروشگاه" />
+      <button class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded shadow">
+        نرخ کارمزد
+      </button>
     </div>
-  </main>
+  </div>
 
-  <!-- Filter Script -->
+  <!-- جدول -->
+  <div class="max-w-6xl mx-auto overflow-x-auto bg-white rounded-xl shadow">
+    <table class="min-w-full table-auto text-right" style="table-layout: auto;">
+      <thead class="bg-blue-600 text-white">
+        <tr>
+          <th class="px-4 py-3">شهر</th>
+          <th class="px-4 py-3">صنف</th>
+          <th class="px-4 py-3">نام فروشگاه</th>
+          <th class="px-4 py-3">آدرس</th>
+          <th class="px-4 py-3">شماره تماس</th>
+        </tr>
+      </thead>
+      <tbody id="storeTable" class="divide-y divide-gray-200">
+        <!-- ردیف‌ها از فایل CSV لود می‌شوند -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- اسکریپت بارگذاری CSV و فیلتر -->
   <script>
+    fetch("data.csv")
+      .then(response => response.text())
+      .then(csv => {
+        Papa.parse(csv, {
+          header: true,
+          complete: function(results) {
+            const tbody = document.getElementById("storeTable");
+
+            results.data.forEach(row => {
+              if (!row["شهر"]) return;
+
+              const tr = document.createElement("tr");
+              tr.className = "hover:bg-gray-50";
+
+              tr.innerHTML = `
+                <td class="px-4 py-3">${row["شهر"]}</td>
+                <td class="px-4 py-3">${row["صنف"]}</td>
+                <td class="px-4 py-3">${row["نام فروشگاه"]}</td>
+                <td class="px-4 py-3">${row["آدرس"]}</td>
+                <td class="px-4 py-3"><a href="tel:${row["شماره تماس"]}" class="text-blue-600 hover:underline">${row["شماره تماس"]}</a></td>
+              `;
+
+              tbody.appendChild(tr);
+            });
+          }
+        });
+      });
+
     function filterTable() {
       const city = document.getElementById("searchCity").value.toUpperCase();
+      const store = document.getElementById("searchStore").value.toUpperCase();
       const category = document.getElementById("searchCategory").value.toUpperCase();
       const rows = document.getElementById("storeTable").getElementsByTagName("tr");
 
       for (let i = 0; i < rows.length; i++) {
-        const cityCell = rows[i].getElementsByTagName("td")[0];
-        const categoryCell = rows[i].getElementsByTagName("td")[2];
+        const tds = rows[i].getElementsByTagName("td");
+        const matchesCity = tds[0].textContent.toUpperCase().includes(city);
+        const matchesCategory = tds[1].textContent.toUpperCase().includes(category);
+        const matchesStore = tds[2].textContent.toUpperCase().includes(store);
 
-        const matchesCity = cityCell && cityCell.textContent.toUpperCase().includes(city);
-        const matchesCategory = categoryCell && categoryCell.textContent.toUpperCase().includes(category);
-
-        rows[i].style.display = (matchesCity && matchesCategory) ? "" : "none";
+        rows[i].style.display = (matchesCity && matchesStore && matchesCategory) ? "" : "none";
       }
     }
   </script>
