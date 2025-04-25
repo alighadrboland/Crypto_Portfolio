@@ -14,35 +14,29 @@
     <h1 class="text-2xl font-bold text-blue-700">لیست فروشگاه‌ها</h1>
   </div>
 
-  <!-- جستجوها و دکمه‌ها -->
+  <!-- باکس‌های جستجو -->
+  <div class="max-w-6xl mx-auto mb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <input id="searchCity" onkeyup="filterTable()" type="text"
+      class="border rounded-md px-4 py-2 w-full" placeholder="جستجو بر اساس شهر" />
+
+    <input id="searchCategory" onkeyup="filterTable()" type="text"
+      class="border rounded-md px-4 py-2 w-full" placeholder="جستجو بر اساس صنف" />
+
+    <input id="searchStore" onkeyup="filterTable()" type="text"
+      class="border rounded-md px-4 py-2 w-full" placeholder="جستجو بر اساس نام فروشگاه" />
+  </div>
+
+  <!-- دکمه‌های زیر باکس‌ها -->
   <div class="max-w-6xl mx-auto mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-    
-    <!-- شهر -->
-    <div class="flex items-center space-x-2 space-x-reverse">
-      <input id="searchCity" onkeyup="filterTable()" type="text"
-        class="flex-grow border rounded-md px-4 py-2 w-2/3" placeholder="جستجو بر اساس شهر" />
-      <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow">
-        معرفی کارت رفاهی
-      </button>
-    </div>
-
-    <!-- صنف -->
-    <div class="flex items-center space-x-2 space-x-reverse">
-      <input id="searchCategory" onkeyup="filterTable()" type="text"
-        class="flex-grow border rounded-md px-4 py-2 w-2/3" placeholder="جستجو بر اساس صنف" />
-      <button class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow">
-        مهلت استفاده و مدت بازپرداخت
-      </button>
-    </div>
-
-    <!-- نام فروشگاه -->
-    <div class="flex items-center space-x-2 space-x-reverse">
-      <input id="searchStore" onkeyup="filterTable()" type="text"
-        class="flex-grow border rounded-md px-4 py-2 w-2/3" placeholder="جستجو بر اساس نام فروشگاه" />
-      <button class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded shadow">
-        نرخ کارمزد
-      </button>
-    </div>
+    <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full">
+      معرفی کارت رفاهی
+    </button>
+    <button class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full">
+      مهلت استفاده و مدت بازپرداخت
+    </button>
+    <button class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full">
+      نرخ کارمزد
+    </button>
   </div>
 
   <!-- جدول -->
