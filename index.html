@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لیست فروشگاه‌ها</title>
+  <title>فروشگاه های پذیرنده کارت رفاهی</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
@@ -11,7 +11,7 @@
 
   <!-- عنوان -->
   <div class="flex justify-center mb-6">
-    <h1 class="text-2xl font-bold text-blue-700">لیست فروشگاه‌ها</h1>
+    <h1 class="text-1xl font-bold text-blue-700">فروشگاه های پذیرنده کارت رفاهی در استان بوشهر</h1>
   </div>
 
   <!-- باکس‌های جستجو -->
@@ -134,6 +134,8 @@
 
     function closeModal() {
       const modal = document.getElementById("modal");
+      const content = document.getElementById("modalContent");
+      content.innerHTML = ""; // حذف iframe برای توقف کامل ویدیو
       modal.classList.remove("flex");
       modal.classList.add("hidden");
     }
