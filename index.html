@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
-    /* انیمیشن باز و بسته شدن مودال */
     .fade-enter {
       opacity: 0;
       transform: scale(0.95);
@@ -26,7 +25,6 @@
       opacity: 0;
       transform: scale(0.95);
     }
-    /* بلور پس زمینه هنگام باز بودن مودال */
     #modal::before {
       content: "";
       position: absolute;
@@ -35,7 +33,6 @@
       -webkit-backdrop-filter: blur(8px);
       z-index: -1;
     }
-    /* زیباسازی هاور دکمه‌ها */
     .fancy-button {
       transition: all 0.3s ease;
     }
@@ -53,18 +50,10 @@
   </div>
 
   <!-- دکمه معرفی کارت رفاهی -->
-  <div class="max-w-6xl mx-auto mb-4 flex justify-center">
-    <button onclick="showVideoModal()"
-      class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-6 py-3 rounded shadow fancy-button w-full sm:w-auto">
-      معرفی کارت رفاهی
-    </button>
-  </div>
-
-  <!-- دکمه مزایای کارت رفاهی -->
   <div class="max-w-6xl mx-auto mb-4">
-    <button onclick="showBenefitsModal()"
-      class="bg-green-700 hover:bg-green-800 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full sm:w-auto">
-      مزایای کارت رفاهی برای صاحبان کارت و پذیرندگان
+    <button onclick="showVideoModal()"
+      class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full sm:w-auto">
+      معرفی کارت رفاهی
     </button>
   </div>
 
@@ -79,7 +68,7 @@
   </div>
 
   <!-- دکمه‌های دیگر -->
-  <div class="max-w-6xl mx-auto mb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+  <div class="max-w-6xl mx-auto mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
     <button onclick="showMessageModal('مهلت استفاده از اعتبار، از تاریخ صدور تا آخرین روز ماه بعد و مدت بازپرداخت اقساط ١٢ ماه در اقساط مساوی و ماهیانه است.')"
       class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full">
       مهلت استفاده و مدت بازپرداخت
@@ -87,6 +76,10 @@
     <button onclick="showMessageModal('3% مبلغ خرید که در اقساط مساوی همزمان با وصول اقساط دریافت می‌شود.')"
       class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full">
       نرخ کارمزد
+    </button>
+    <button onclick="showBenefitsModal()"
+      class="bg-green-700 hover:bg-green-800 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full">
+      مزایای کارت رفاهی برای صاحبان کارت و پذیرندگان
     </button>
   </div>
 
