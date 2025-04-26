@@ -1,187 +1,244 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لیست فروشگاه‌ها</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    .fade-enter {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.3s ease;
+    }
+    .fade-enter-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .fade-exit {
+      opacity: 1;
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+    .fade-exit-active {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    #modal::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: -1;
+    }
+    .fancy-button {
+      transition: all 0.3s ease;
+    }
+    .fancy-button:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.15);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 p-4">
+<body class="bg-gray-100 text-gray-800 px-4 py-6">
 
-  <!-- دکمه معرفی کارت رفاهی (وسط و متمایز) -->
-  <div class="max-w-6xl mx-auto mb-4 flex justify-center">
+  <!-- عنوان -->
+  <div class="flex justify-center mb-6">
+    <h1 class="text-2xl font-bold text-blue-700">لیست فروشگاه‌ها</h1>
+  </div>
+
+  <!-- دکمه معرفی کارت رفاهی -->
+  <div class="max-w-6xl mx-auto mb-4">
     <button onclick="showVideoModal()"
-      class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded w-full sm:w-auto">
+      class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full sm:w-auto">
       معرفی کارت رفاهی
     </button>
   </div>
 
-  <!-- باکس جستجو -->
-  <div class="max-w-6xl mx-auto mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <input type="text" id="cityInput" placeholder="جستجو بر اساس شهر" class="p-2 rounded border">
-    <input type="text" id="storeInput" placeholder="جستجو بر اساس نام فروشگاه" class="p-2 rounded border">
-    <input type="text" id="categoryInput" placeholder="جستجو بر اساس صنف" class="p-2 rounded border">
+  <!-- باکس‌های جستجو -->
+  <div class="max-w-6xl mx-auto mb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <input id="searchCity" onkeyup="filterTable()" type="text"
+      class="border rounded-md px-4 py-2 w-full" placeholder="جستجو بر اساس شهر" />
+    <input id="searchCategory" onkeyup="filterTable()" type="text"
+      class="border rounded-md px-4 py-2 w-full" placeholder="جستجو بر اساس صنف" />
+    <input id="searchStore" onkeyup="filterTable()" type="text"
+      class="border rounded-md px-4 py-2 w-full" placeholder="جستجو بر اساس نام فروشگاه" />
   </div>
 
-  <!-- دکمه‌های مزایای کارت رفاهی + مهلت استفاده + نرخ کارمزد -->
-  <div class="max-w-6xl mx-auto mb-6 flex flex-col sm:flex-row justify-center gap-4">
-    <button onclick="showBenefitsModal()" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded w-full sm:w-auto">
-      مزایای کارت رفاهی
-    </button>
-    <button onclick="showUseModal()" class="bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded w-full sm:w-auto">
+  <!-- دکمه‌های دیگر -->
+  <div class="max-w-6xl mx-auto mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <button onclick="showMessageModal('مهلت استفاده از اعتبار، از تاریخ صدور تا آخرین روز ماه بعد و مدت بازپرداخت اقساط ١٢ ماه در اقساط مساوی و ماهیانه است.')"
+      class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full">
       مهلت استفاده و مدت بازپرداخت
     </button>
-    <button onclick="showFeeModal()" class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded w-full sm:w-auto">
+    <button onclick="showMessageModal('3% مبلغ خرید که در اقساط مساوی همزمان با وصول اقساط دریافت می‌شود.')"
+      class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full">
       نرخ کارمزد
+    </button>
+    <button onclick="showBenefitsModal()"
+      class="bg-green-700 hover:bg-green-800 text-white text-sm font-medium px-4 py-2 rounded shadow fancy-button w-full">
+      مزایای کارت رفاهی برای صاحبان کارت و پذیرندگان
     </button>
   </div>
 
-  <!-- عنوان بالای جدول -->
-  <div class="max-w-6xl mx-auto mb-4">
-    <h1 class="text-2xl font-bold text-center text-blue-700 dark:text-blue-400 mb-6">لیست فروشگاه‌ها</h1>
+  <!-- متن کارت رفاهی -->
+  <div class="max-w-6xl mx-auto mb-6 text-center">
+    <p class="text-gray-700 text-lg">کارت رفاهی: ابزاری نوین برای خرید آسان و پرداخت قسطی با کارمزد کم</p>
   </div>
 
-  <!-- جدول فروشگاه‌ها -->
-  <div class="max-w-6xl mx-auto overflow-x-auto">
-    <table id="storeTable" class="min-w-full bg-white dark:bg-gray-800 rounded shadow">
-      <thead>
-        <tr class="bg-blue-100 dark:bg-blue-700 text-gray-700 dark:text-white">
-          <th class="p-2 text-right">شهر</th>
-          <th class="p-2 text-right">نام فروشگاه</th>
-          <th class="p-2 text-right">صنف</th>
-          <th class="p-2 text-right">آدرس</th>
-          <th class="p-2 text-right">شماره تلفن</th>
+  <!-- جدول -->
+  <div class="max-w-6xl mx-auto overflow-x-auto bg-white rounded-xl shadow">
+    <table class="min-w-full table-auto text-right" style="table-layout: auto;">
+      <thead class="bg-blue-600 text-white">
+        <tr>
+          <th class="px-4 py-3">شهر</th>
+          <th class="px-4 py-3">صنف</th>
+          <th class="px-4 py-3">نام فروشگاه</th>
+          <th class="px-4 py-3">آدرس</th>
+          <th class="px-4 py-3">شماره تماس</th>
         </tr>
       </thead>
-      <tbody class="text-gray-700 dark:text-gray-300">
-        <!-- اینجا ردیف‌ها لود میشن -->
+      <tbody id="storeTable" class="divide-y divide-gray-200">
+        <!-- ردیف‌ها از فایل CSV لود می‌شوند -->
       </tbody>
     </table>
   </div>
 
-  <!-- مودال‌ها -->
-  <div id="videoModal" class="fixed inset-0 hidden bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden relative max-w-2xl w-full">
-      <button onclick="closeVideoModal()" class="absolute top-2 left-2 text-gray-700 dark:text-gray-300">&times;</button>
-      <div class="relative" style="padding-top: 56.25%;">
-        <iframe id="videoFrame" class="absolute inset-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-
-  <div id="benefitsModal" class="fixed inset-0 hidden bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden p-6 max-w-md w-full relative">
-      <button onclick="closeBenefitsModal()" class="absolute top-2 left-2 text-gray-700 dark:text-gray-300">&times;</button>
-      <h2 class="text-lg font-bold mb-2">مزایای کارت رفاهی</h2>
-      <p class="text-sm leading-6">
-        <strong>مزایای کارت رفاهی برای دارندگان کارت:</strong><br>
-        افزایش قدرت خرید مشتریان<br>
-        دریافت اعتبار خرید کالا بدون نیاز به ایجاد میانگین حساب<br>
-        هزینه پایین تأمین مالی برای مشتریان<br><br>
-        <strong>مزایای کارت رفاهی برای پذیرندگان:</strong><br>
-        افزایش ظرفیت اعتباری به منظور تأمین مالی<br>
-        تضمین بازپرداخت اوراق گام توسط بانک و کاهش ریسک نکول در ارائه خدمت فروش اقساطی کالا<br>
-        افزایش فروش و امکان فروش متقاطع<br>
-        قابلیت انتقال اوراق در زنجیره تأمین<br>
-        قابلیت تنزیل در صورت نیاز به منابع مالی به منظور تأمین سرمایه در گردش<br>
-        استفاده از اوراق گام در تسویه معاملات بورس کالا<br>
-        انتقال به دستگاه‌های اجرایی بابت پرداخت بدهی به قیمت اسمی اوراق
-      </p>
-    </div>
-  </div>
-
-  <div id="useModal" class="fixed inset-0 hidden bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden p-6 max-w-md w-full relative">
-      <button onclick="closeUseModal()" class="absolute top-2 left-2 text-gray-700 dark:text-gray-300">&times;</button>
-      <p class="text-sm leading-6">
-        مهلت استفاده از اعتبار، از تاریخ صدور تا آخرین روز ماه بعد و مدت بازپرداخت اقساط ١٢ ماه در اقساط مساوی و ماهیانه است.
-      </p>
-    </div>
-  </div>
-
-  <div id="feeModal" class="fixed inset-0 hidden bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden p-6 max-w-md w-full relative">
-      <button onclick="closeFeeModal()" class="absolute top-2 left-2 text-gray-700 dark:text-gray-300">&times;</button>
-      <p class="text-sm leading-6">
-        3% مبلغ خرید که در اقساط مساوی همزمان با وصول اقساط دریافت می‌شود.
-      </p>
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-50">
+    <div id="modalBox" class="bg-white rounded-lg shadow-lg max-w-2xl w-full p-4 relative">
+      <button onclick="closeModal()" class="absolute top-2 left-2 text-gray-500 hover:text-red-500 text-lg">✕</button>
+      <div id="modalContent"></div>
     </div>
   </div>
 
   <!-- اسکریپت‌ها -->
   <script>
-    function showVideoModal() {
-      document.getElementById('videoModal').classList.remove('hidden');
-      document.getElementById('videoFrame').src = "https://www.aparat.com/video/video/embed/videohash/blep93a/vt/frame";
-    }
-    function closeVideoModal() {
-      document.getElementById('videoModal').classList.add('hidden');
-      document.getElementById('videoFrame').src = "";
-    }
-    function showBenefitsModal() {
-      document.getElementById('benefitsModal').classList.remove('hidden');
-    }
-    function closeBenefitsModal() {
-      document.getElementById('benefitsModal').classList.add('hidden');
-    }
-    function showUseModal() {
-      document.getElementById('useModal').classList.remove('hidden');
-    }
-    function closeUseModal() {
-      document.getElementById('useModal').classList.add('hidden');
-    }
-    function showFeeModal() {
-      document.getElementById('feeModal').classList.remove('hidden');
-    }
-    function closeFeeModal() {
-      document.getElementById('feeModal').classList.add('hidden');
-    }
-
-    // بارگذاری اطلاعات جدول از CSV
-    fetch('stores.csv')
+    fetch("data.csv")
       .then(response => response.text())
-      .then(data => {
-        const rows = data.trim().split('\n').slice(1);
-        const tbody = document.querySelector('#storeTable tbody');
-        rows.forEach(row => {
-          const cols = row.split(',');
-          const tr = document.createElement('tr');
-          cols.forEach((col, index) => {
-            const td = document.createElement('td');
-            td.className = "border-t p-2";
-            if (index === 4) {
-              td.innerHTML = `<a href="tel:${col.trim()}" class="text-blue-600 hover:underline">${col.trim()}</a>`;
-            } else {
-              td.textContent = col.trim();
-            }
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
+      .then(csv => {
+        Papa.parse(csv, {
+          header: true,
+          complete: function(results) {
+            const tbody = document.getElementById("storeTable");
+            results.data.forEach(row => {
+              if (!row["شهر"]) return;
+
+              const tr = document.createElement("tr");
+              tr.className = "hover:bg-gray-50";
+
+              tr.innerHTML = `
+                <td class="px-4 py-3">${row["شهر"]}</td>
+                <td class="px-4 py-3">${row["صنف"]}</td>
+                <td class="px-4 py-3">${row["نام فروشگاه"]}</td>
+                <td class="px-4 py-3">${row["آدرس"]}</td>
+                <td class="px-4 py-3"><a href="tel:${row["شماره تماس"]}" class="text-blue-600 hover:underline">${row["شماره تماس"]}</a></td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
         });
       });
 
-    // فیلتر جستجو
-    document.getElementById('cityInput').addEventListener('input', filterTable);
-    document.getElementById('storeInput').addEventListener('input', filterTable);
-    document.getElementById('categoryInput').addEventListener('input', filterTable);
-
     function filterTable() {
-      const cityValue = document.getElementById('cityInput').value.toLowerCase();
-      const storeValue = document.getElementById('storeInput').value.toLowerCase();
-      const categoryValue = document.getElementById('categoryInput').value.toLowerCase();
-      const rows = document.querySelectorAll('#storeTable tbody tr');
+      const city = document.getElementById("searchCity").value.toUpperCase();
+      const store = document.getElementById("searchStore").value.toUpperCase();
+      const category = document.getElementById("searchCategory").value.toUpperCase();
+      const rows = document.getElementById("storeTable").getElementsByTagName("tr");
 
-      rows.forEach(row => {
-        const city = row.children[0].textContent.toLowerCase();
-        const store = row.children[1].textContent.toLowerCase();
-        const category = row.children[2].textContent.toLowerCase();
+      for (let i = 0; i < rows.length; i++) {
+        const tds = rows[i].getElementsByTagName("td");
+        const matchesCity = tds[0].textContent.toUpperCase().includes(city);
+        const matchesCategory = tds[1].textContent.toUpperCase().includes(category);
+        const matchesStore = tds[2].textContent.toUpperCase().includes(store);
 
-        if (city.includes(cityValue) && store.includes(storeValue) && category.includes(categoryValue)) {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
-        }
-      });
+        rows[i].style.display = (matchesCity && matchesStore && matchesCategory) ? "" : "none";
+      }
+    }
+
+    function showVideoModal() {
+      const modal = document.getElementById("modal");
+      const modalBox = document.getElementById("modalBox");
+      const content = document.getElementById("modalContent");
+
+      content.innerHTML = `
+        <div class="relative w-full" style="padding-bottom: 56.25%;">
+          <iframe class="absolute top-0 left-0 w-full h-full rounded-lg"
+            src="https://www.aparat.com/video/video/embed/videohash/blep93a/vt/frame"
+            allowfullscreen frameborder="0"></iframe>
+        </div>
+      `;
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      modalBox.classList.add("fade-enter");
+      setTimeout(() => {
+        modalBox.classList.add("fade-enter-active");
+      }, 10);
+    }
+
+    function showBenefitsModal() {
+      const modal = document.getElementById("modal");
+      const modalBox = document.getElementById("modalBox");
+      const content = document.getElementById("modalContent");
+
+      content.innerHTML = `
+        <div class="text-gray-700 space-y-4 leading-7 text-justify">
+          <h2 class="text-lg font-bold mb-2">مزایای کارت رفاهی برای دارندگان کارت:</h2>
+          <ul class="list-disc pr-6">
+            <li>افزایش قدرت خرید مشتریان</li>
+            <li>دریافت اعتبار خرید کالا بدون نیاز به ایجاد میانگین حساب</li>
+            <li>هزینه پایین تأمین مالی برای مشتریان</li>
+          </ul>
+          <h2 class="text-lg font-bold mt-6 mb-2">مزایای کارت رفاهی برای پذیرندگان:</h2>
+          <ul class="list-disc pr-6">
+            <li>افزایش ظرفیت اعتباری به منظور تأمین مالی</li>
+            <li>تضمین بازپرداخت اوراق گام توسط بانک و کاهش ریسک نکول</li>
+            <li>افزایش فروش و امکان فروش متقاطع</li>
+            <li>قابلیت انتقال اوراق در زنجیره تأمین</li>
+            <li>قابلیت تنزیل در صورت نیاز به منابع مالی</li>
+            <li>استفاده از اوراق گام در معاملات بورس کالا</li>
+            <li>انتقال به دستگاههای اجرایی بابت پرداخت بدهی به قیمت اسمی</li>
+          </ul>
+        </div>
+      `;
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      modalBox.classList.add("fade-enter");
+      setTimeout(() => {
+        modalBox.classList.add("fade-enter-active");
+      }, 10);
+    }
+
+    function showMessageModal(message) {
+      const modal = document.getElementById("modal");
+      const modalBox = document.getElementById("modalBox");
+      const content = document.getElementById("modalContent");
+
+      content.innerHTML = `<p class="text-gray-800 text-center text-lg py-6">${message}</p>`;
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      modalBox.classList.add("fade-enter");
+      setTimeout(() => {
+        modalBox.classList.add("fade-enter-active");
+      }, 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("modal");
+      const modalBox = document.getElementById("modalBox");
+      const content = document.getElementById("modalContent");
+
+      modalBox.classList.remove("fade-enter-active");
+      modalBox.classList.add("fade-exit-active");
+
+      setTimeout(() => {
+        modal.classList.remove("flex");
+        modal.classList.add("hidden");
+        modalBox.className = "bg-white rounded-lg shadow-lg max-w-2xl w-full p-4 relative";
+        content.innerHTML = "";
+      }, 300);
     }
   </script>
 
