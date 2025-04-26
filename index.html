@@ -3,15 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>فروشگاه های پذیرنده کارت رفاهی</title>
+  <title>لیست فروشگاه‌ها</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    /* انیمیشن باز و بسته شدن مودال */
+    .fade-enter {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.3s ease;
+    }
+    .fade-enter-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .fade-exit {
+      opacity: 1;
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+    .fade-exit-active {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-800 px-4 py-6">
 
   <!-- عنوان -->
   <div class="flex justify-center mb-6">
-    <h1 class="text-1xl font-bold text-blue-700">فروشگاه های پذیرنده کارت رفاهی در استان بوشهر</h1>
+    <h1 class="text-2xl font-bold text-blue-700">لیست فروشگاه‌ها</h1>
+  </div>
+
+  <!-- دکمه معرفی کارت رفاهی -->
+  <div class="max-w-6xl mx-auto mb-4">
+    <button onclick="showVideoModal()"
+      class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full sm:w-auto">
+      معرفی کارت رفاهی
+    </button>
   </div>
 
   <!-- باکس‌های جستجو -->
@@ -24,12 +53,8 @@
       class="border rounded-md px-4 py-2 w-full" placeholder="جستجو بر اساس نام فروشگاه" />
   </div>
 
-  <!-- دکمه‌ها -->
-  <div class="max-w-6xl mx-auto mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <button onclick="showVideoModal()"
-      class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full">
-      معرفی کارت رفاهی
-    </button>
+  <!-- دکمه‌های دیگر -->
+  <div class="max-w-6xl mx-auto mb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
     <button onclick="showMessageModal('مهلت استفاده از اعتبار، از تاریخ صدور تا آخرین روز ماه بعد و مدت بازپرداخت اقساط ١٢ ماه در اقساط مساوی و ماهیانه است.')"
       class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full">
       مهلت استفاده و مدت بازپرداخت
@@ -40,9 +65,14 @@
     </button>
   </div>
 
+  <!-- متن کارت رفاهی -->
+  <div class="max-w-6xl mx-auto mb-6 text-center">
+    <p class="text-gray-700 text-lg">کارت رفاهی: ابزاری نوین برای خرید آسان و پرداخت قسطی با کارمزد کم</p>
+  </div>
+
   <!-- جدول -->
   <div class="max-w-6xl mx-auto overflow-x-auto bg-white rounded-xl shadow">
-    <table class="min-w-full table-auto text-center" style="table-layout: auto;">
+    <table class="min-w-full table-auto text-right" style="table-layout: auto;">
       <thead class="bg-blue-600 text-white">
         <tr>
           <th class="px-4 py-3">شهر</th>
@@ -60,7 +90,7 @@
 
   <!-- Modal -->
   <div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full p-4 relative">
+    <div id="modalBox" class="bg-white rounded-lg shadow-lg max-w-2xl w-full p-4 relative">
       <button onclick="closeModal()" class="absolute top-2 left-2 text-gray-500 hover:text-red-500 text-lg">✕</button>
       <div id="modalContent"></div>
     </div>
@@ -112,7 +142,9 @@
 
     function showVideoModal() {
       const modal = document.getElementById("modal");
+      const modalBox = document.getElementById("modalBox");
       const content = document.getElementById("modalContent");
+
       content.innerHTML = `
         <div class="relative w-full" style="padding-bottom: 56.25%;">
           <iframe class="absolute top-0 left-0 w-full h-full rounded-lg"
@@ -122,22 +154,40 @@
       `;
       modal.classList.remove("hidden");
       modal.classList.add("flex");
+      modalBox.classList.add("fade-enter");
+      setTimeout(() => {
+        modalBox.classList.add("fade-enter-active");
+      }, 10);
     }
 
     function showMessageModal(message) {
       const modal = document.getElementById("modal");
+      const modalBox = document.getElementById("modalBox");
       const content = document.getElementById("modalContent");
+
       content.innerHTML = `<p class="text-gray-800 text-center text-lg py-6">${message}</p>`;
       modal.classList.remove("hidden");
       modal.classList.add("flex");
+      modalBox.classList.add("fade-enter");
+      setTimeout(() => {
+        modalBox.classList.add("fade-enter-active");
+      }, 10);
     }
 
     function closeModal() {
       const modal = document.getElementById("modal");
+      const modalBox = document.getElementById("modalBox");
       const content = document.getElementById("modalContent");
-      content.innerHTML = ""; // حذف iframe برای توقف کامل ویدیو
-      modal.classList.remove("flex");
-      modal.classList.add("hidden");
+
+      modalBox.classList.remove("fade-enter-active");
+      modalBox.classList.add("fade-exit-active");
+
+      setTimeout(() => {
+        modal.classList.remove("flex");
+        modal.classList.add("hidden");
+        modalBox.className = "bg-white rounded-lg shadow-lg max-w-2xl w-full p-4 relative";
+        content.innerHTML = ""; // حذف iframe برای قطع کامل ویدیو
+      }, 300);
     }
   </script>
 
