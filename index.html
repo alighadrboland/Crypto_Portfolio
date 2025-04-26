@@ -8,44 +8,44 @@
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 p-4">
 
-  <!-- دکمه معرفی کارت رفاهی (وسط صفحه) -->
+  <!-- دکمه معرفی کارت رفاهی (وسط و متمایز) -->
   <div class="max-w-6xl mx-auto mb-4 flex justify-center">
     <button onclick="showVideoModal()"
-      class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full sm:w-auto text-center">
+      class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded w-full sm:w-auto">
       معرفی کارت رفاهی
     </button>
   </div>
 
-  <!-- جستجوها -->
+  <!-- باکس جستجو -->
   <div class="max-w-6xl mx-auto mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
     <input type="text" id="cityInput" placeholder="جستجو بر اساس شهر" class="p-2 rounded border">
     <input type="text" id="storeInput" placeholder="جستجو بر اساس نام فروشگاه" class="p-2 rounded border">
     <input type="text" id="categoryInput" placeholder="جستجو بر اساس صنف" class="p-2 rounded border">
   </div>
 
-  <!-- دکمه‌های پایین جستجو -->
+  <!-- دکمه‌های مزایای کارت رفاهی + مهلت استفاده + نرخ کارمزد -->
   <div class="max-w-6xl mx-auto mb-6 flex flex-col sm:flex-row justify-center gap-4">
-    <button onclick="showBenefitsModal()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full sm:w-auto">
+    <button onclick="showBenefitsModal()" class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded w-full sm:w-auto">
       مزایای کارت رفاهی
     </button>
-    <button onclick="showUseModal()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full sm:w-auto">
+    <button onclick="showUseModal()" class="bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded w-full sm:w-auto">
       مهلت استفاده و مدت بازپرداخت
     </button>
-    <button onclick="showFeeModal()" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full sm:w-auto">
+    <button onclick="showFeeModal()" class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded w-full sm:w-auto">
       نرخ کارمزد
     </button>
   </div>
 
-  <!-- متن کارت رفاهی -->
+  <!-- عنوان بالای جدول -->
   <div class="max-w-6xl mx-auto mb-4">
     <h1 class="text-2xl font-bold text-center text-blue-700 dark:text-blue-400 mb-6">لیست فروشگاه‌ها</h1>
   </div>
 
-  <!-- جدول -->
+  <!-- جدول فروشگاه‌ها -->
   <div class="max-w-6xl mx-auto overflow-x-auto">
     <table id="storeTable" class="min-w-full bg-white dark:bg-gray-800 rounded shadow">
       <thead>
-        <tr class="bg-blue-200 dark:bg-blue-700 text-gray-700 dark:text-white">
+        <tr class="bg-blue-100 dark:bg-blue-700 text-gray-700 dark:text-white">
           <th class="p-2 text-right">شهر</th>
           <th class="p-2 text-right">نام فروشگاه</th>
           <th class="p-2 text-right">صنف</th>
@@ -54,7 +54,7 @@
         </tr>
       </thead>
       <tbody class="text-gray-700 dark:text-gray-300">
-        <!-- اطلاعات اینجا لود میشه -->
+        <!-- اینجا ردیف‌ها لود میشن -->
       </tbody>
     </table>
   </div>
@@ -73,7 +73,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden p-6 max-w-md w-full relative">
       <button onclick="closeBenefitsModal()" class="absolute top-2 left-2 text-gray-700 dark:text-gray-300">&times;</button>
       <h2 class="text-lg font-bold mb-2">مزایای کارت رفاهی</h2>
-      <p class="text-sm">
+      <p class="text-sm leading-6">
         <strong>مزایای کارت رفاهی برای دارندگان کارت:</strong><br>
         افزایش قدرت خرید مشتریان<br>
         دریافت اعتبار خرید کالا بدون نیاز به ایجاد میانگین حساب<br>
@@ -93,7 +93,7 @@
   <div id="useModal" class="fixed inset-0 hidden bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden p-6 max-w-md w-full relative">
       <button onclick="closeUseModal()" class="absolute top-2 left-2 text-gray-700 dark:text-gray-300">&times;</button>
-      <p class="text-sm">
+      <p class="text-sm leading-6">
         مهلت استفاده از اعتبار، از تاریخ صدور تا آخرین روز ماه بعد و مدت بازپرداخت اقساط ١٢ ماه در اقساط مساوی و ماهیانه است.
       </p>
     </div>
@@ -102,12 +102,13 @@
   <div id="feeModal" class="fixed inset-0 hidden bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden p-6 max-w-md w-full relative">
       <button onclick="closeFeeModal()" class="absolute top-2 left-2 text-gray-700 dark:text-gray-300">&times;</button>
-      <p class="text-sm">
+      <p class="text-sm leading-6">
         3% مبلغ خرید که در اقساط مساوی همزمان با وصول اقساط دریافت می‌شود.
       </p>
     </div>
   </div>
 
+  <!-- اسکریپت‌ها -->
   <script>
     function showVideoModal() {
       document.getElementById('videoModal').classList.remove('hidden');
@@ -136,7 +137,7 @@
       document.getElementById('feeModal').classList.add('hidden');
     }
 
-    // بارگذاری CSV
+    // بارگذاری اطلاعات جدول از CSV
     fetch('stores.csv')
       .then(response => response.text())
       .then(data => {
@@ -159,7 +160,7 @@
         });
       });
 
-    // فیلترها
+    // فیلتر جستجو
     document.getElementById('cityInput').addEventListener('input', filterTable);
     document.getElementById('storeInput').addEventListener('input', filterTable);
     document.getElementById('categoryInput').addEventListener('input', filterTable);
