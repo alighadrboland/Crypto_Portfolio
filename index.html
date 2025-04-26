@@ -26,6 +26,15 @@
       opacity: 0;
       transform: scale(0.95);
     }
+    /* بلور پس زمینه هنگام باز بودن مودال */
+    #modal::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: -1;
+    }
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800 px-4 py-6">
@@ -35,11 +44,11 @@
     <h1 class="text-2xl font-bold text-blue-700">لیست فروشگاه‌ها</h1>
   </div>
 
-  <!-- دکمه معرفی کارت رفاهی -->
+  <!-- دکمه مزایای کارت رفاهی -->
   <div class="max-w-6xl mx-auto mb-4">
-    <button onclick="showVideoModal()"
-      class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full sm:w-auto">
-      معرفی کارت رفاهی
+    <button onclick="showBenefitsModal()"
+      class="bg-green-700 hover:bg-green-800 text-white text-sm font-medium px-4 py-2 rounded shadow w-full sm:w-auto">
+      مزایای کارت رفاهی برای صاحبان کارت و پذیرندگان
     </button>
   </div>
 
@@ -55,6 +64,10 @@
 
   <!-- دکمه‌های دیگر -->
   <div class="max-w-6xl mx-auto mb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <button onclick="showVideoModal()"
+      class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full">
+      معرفی کارت رفاهی
+    </button>
     <button onclick="showMessageModal('مهلت استفاده از اعتبار، از تاریخ صدور تا آخرین روز ماه بعد و مدت بازپرداخت اقساط ١٢ ماه در اقساط مساوی و ماهیانه است.')"
       class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded shadow w-full">
       مهلت استفاده و مدت بازپرداخت
@@ -160,6 +173,39 @@
       }, 10);
     }
 
+    function showBenefitsModal() {
+      const modal = document.getElementById("modal");
+      const modalBox = document.getElementById("modalBox");
+      const content = document.getElementById("modalContent");
+
+      content.innerHTML = `
+        <div class="text-gray-700 space-y-4 leading-7 text-justify">
+          <h2 class="text-lg font-bold mb-2">مزایای کارت رفاهی برای دارندگان کارت:</h2>
+          <ul class="list-disc pr-6">
+            <li>افزایش قدرت خرید مشتریان</li>
+            <li>دریافت اعتبار خرید کالا بدون نیاز به ایجاد میانگین حساب</li>
+            <li>هزینه پایین تأمین مالی برای مشتریان</li>
+          </ul>
+          <h2 class="text-lg font-bold mt-6 mb-2">مزایای کارت رفاهی برای پذیرندگان:</h2>
+          <ul class="list-disc pr-6">
+            <li>افزایش ظرفیت اعتباری به منظور تأمین مالی</li>
+            <li>تضمین بازپرداخت اوراق گام توسط بانک و کاهش ریسک نکول</li>
+            <li>افزایش فروش و امکان فروش متقاطع</li>
+            <li>قابلیت انتقال اوراق در زنجیره تأمین</li>
+            <li>قابلیت تنزیل در صورت نیاز به منابع مالی</li>
+            <li>استفاده از اوراق گام در معاملات بورس کالا</li>
+            <li>انتقال به دستگاههای اجرایی بابت پرداخت بدهی به قیمت اسمی</li>
+          </ul>
+        </div>
+      `;
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      modalBox.classList.add("fade-enter");
+      setTimeout(() => {
+        modalBox.classList.add("fade-enter-active");
+      }, 10);
+    }
+
     function showMessageModal(message) {
       const modal = document.getElementById("modal");
       const modalBox = document.getElementById("modalBox");
@@ -186,7 +232,7 @@
         modal.classList.remove("flex");
         modal.classList.add("hidden");
         modalBox.className = "bg-white rounded-lg shadow-lg max-w-2xl w-full p-4 relative";
-        content.innerHTML = ""; // حذف iframe برای قطع کامل ویدیو
+        content.innerHTML = ""; // حذف iframe یا متن برای جلوگیری از ادامه پخش
       }, 300);
     }
   </script>
