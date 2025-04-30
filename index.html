@@ -202,8 +202,8 @@
   const pageCount = Math.ceil(filteredRows.length / rowsPerPage);
   if (pageCount === 0) return;
 
-  // دکمه قبلی اگر بیشتر از 8 صفحه وجود دارد و صفحه فعلی بزرگ‌تر از 1 است
-  if (pageCount > 8 && currentPage > 1) {
+  // دکمه قبلی اگر صفحه جاری بزرگتر از 1 باشد
+  if (currentPage > 1) {
     const prevBtn = document.createElement("button");
     prevBtn.textContent = "قبلی";
     prevBtn.className = "mx-1 px-3 py-1 rounded bg-gray-300 text-gray-700";
@@ -215,7 +215,19 @@
     pagination.appendChild(prevBtn);
   }
 
-  for (let i = 1; i <= pageCount; i++) {
+  // صفحه‌های اطراف صفحه جاری
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(pageCount, currentPage + 2);
+
+  // اگر فاصله خیلی کم است، تعداد صفحات نمایش داده شده اصلاح می‌شود
+  if (currentPage <= 2) {
+    endPage = Math.min(5, pageCount);
+  } else if (currentPage >= pageCount - 1) {
+    startPage = Math.max(pageCount - 4, 1);
+  }
+
+  // دکمه‌های صفحات
+  for (let i = startPage; i <= endPage; i++) {
     const btn = document.createElement("button");
     btn.className = `mx-1 px-3 py-1 rounded ${i === currentPage ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-700"}`;
     btn.textContent = i;
@@ -227,8 +239,8 @@
     pagination.appendChild(btn);
   }
 
-  // دکمه بعدی اگر بیشتر از 8 صفحه وجود دارد و صفحه فعلی کمتر از کل صفحات است
-  if (pageCount > 8 && currentPage < pageCount) {
+  // دکمه بعدی اگر صفحه جاری کوچکتر از تعداد کل صفحات باشد
+  if (currentPage < pageCount) {
     const nextBtn = document.createElement("button");
     nextBtn.textContent = "بعدی";
     nextBtn.className = "mx-1 px-3 py-1 rounded bg-gray-300 text-gray-700";
@@ -240,7 +252,6 @@
     pagination.appendChild(nextBtn);
   }
 }
-
 
   function filterTable() {
   const city = document.getElementById("searchCity").value.trim().toUpperCase();
