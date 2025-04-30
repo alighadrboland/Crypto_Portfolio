@@ -196,24 +196,51 @@
   }
 
   function renderPagination() {
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = "";
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
 
-    const pageCount = Math.ceil(filteredRows.length / rowsPerPage);
-    if (pageCount === 0) return;
+  const pageCount = Math.ceil(filteredRows.length / rowsPerPage);
+  if (pageCount === 0) return;
 
-    for (let i = 1; i <= pageCount; i++) {
-      const btn = document.createElement("button");
-      btn.className = `mx-1 px-3 py-1 rounded ${i === currentPage ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-700"}`;
-      btn.textContent = i;
-      btn.addEventListener("click", () => {
-        currentPage = i;
-        renderTable();
-        renderPagination();
-      });
-      pagination.appendChild(btn);
-    }
+  // دکمه قبلی اگر بیشتر از 8 صفحه وجود دارد و صفحه فعلی بزرگ‌تر از 1 است
+  if (pageCount > 8 && currentPage > 1) {
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "قبلی";
+    prevBtn.className = "mx-1 px-3 py-1 rounded bg-gray-300 text-gray-700";
+    prevBtn.addEventListener("click", () => {
+      currentPage--;
+      renderTable();
+      renderPagination();
+    });
+    pagination.appendChild(prevBtn);
   }
+
+  for (let i = 1; i <= pageCount; i++) {
+    const btn = document.createElement("button");
+    btn.className = `mx-1 px-3 py-1 rounded ${i === currentPage ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-700"}`;
+    btn.textContent = i;
+    btn.addEventListener("click", () => {
+      currentPage = i;
+      renderTable();
+      renderPagination();
+    });
+    pagination.appendChild(btn);
+  }
+
+  // دکمه بعدی اگر بیشتر از 8 صفحه وجود دارد و صفحه فعلی کمتر از کل صفحات است
+  if (pageCount > 8 && currentPage < pageCount) {
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = "بعدی";
+    nextBtn.className = "mx-1 px-3 py-1 rounded bg-gray-300 text-gray-700";
+    nextBtn.addEventListener("click", () => {
+      currentPage++;
+      renderTable();
+      renderPagination();
+    });
+    pagination.appendChild(nextBtn);
+  }
+}
+
 
   function filterTable() {
   const city = document.getElementById("searchCity").value.trim().toUpperCase();
