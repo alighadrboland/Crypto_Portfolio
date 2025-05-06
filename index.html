@@ -21,17 +21,21 @@
   <p id="gold-price">در حال بارگذاری...</p>
 
   <script>
-    const apiUrl = "https://corsproxy.io/?https://brsapi.ir/Api/User.php?key=FreeTZPrEbgTZzbW2SSGXOlzjlulRFcz";
+    const targetUrl = encodeURIComponent("https://brsapi.ir/Api/User.php?key=FreeTZPrEbgTZzbW2SSGXOlzjlulRFcz");
+    const proxyUrl = "https://api.allorigins.win/get?url=" + targetUrl;
 
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(proxyData => {
-        const actualData = JSON.parse(proxyData.contents);
-        const price = actualData?.gold18?.price || 'نامشخص';
+    fetch(proxyUrl)
+      .then(response => {
+        if (response.ok) return response.json();
+        throw new Error("خطا در دریافت پاسخ پراکسی");
+      })
+      .then(data => {
+        const parsed = JSON.parse(data.contents);
+        const price = parsed?.gold18?.price || 'نامشخص';
         document.getElementById("gold-price").innerText = price + " تومان";
       })
       .catch(error => {
-        console.error("خطا در دریافت قیمت:", error);
+        console.error("خطا:", error);
         document.getElementById("gold-price").innerText = "خطا در دریافت قیمت.";
       });
   </script>
