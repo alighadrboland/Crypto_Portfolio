@@ -25,13 +25,16 @@
     const proxyUrl = "https://api.allorigins.win/get?url=" + targetUrl;
 
     fetch(proxyUrl)
-      .then(response => {
-        if (response.ok) return response.json();
-        throw new Error("خطا در دریافت پاسخ از پراکسی");
-      })
+      .then(response => response.json())
       .then(data => {
-        const parsed = JSON.parse(data.contents);
-        const price = parsed?.gold18?.price || 'نامشخص';
+        console.log("Raw API response:", data);  // چاپ داده‌های خام API
+
+        // بررسی اینکه داده‌ها در چه فرمت و ساختاری آمده‌اند
+        const parsedData = JSON.parse(data.contents);
+        console.log("Parsed data:", parsedData);  // چاپ داده‌های پارس‌شده
+
+        // اگر داده‌های طلای ۱۸ عیار موجود بود، نمایش داده بشه
+        const price = parsedData?.gold18?.price || 'نامشخص';
         document.getElementById("gold-price").innerText = price + " تومان";
       })
       .catch(error => {
