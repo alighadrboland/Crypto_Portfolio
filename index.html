@@ -27,7 +27,7 @@
     fetch(proxyUrl)
       .then(response => {
         if (response.ok) return response.json();
-        throw new Error("خطا در دریافت پاسخ پراکسی");
+        throw new Error("خطا در دریافت پاسخ از پراکسی");
       })
       .then(data => {
         const parsed = JSON.parse(data.contents);
