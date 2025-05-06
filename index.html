@@ -27,13 +27,14 @@
     fetch(proxyUrl)
       .then(response => response.json())
       .then(data => {
-        console.log("Raw API response:", data);  // چاپ داده‌های خام
+        console.log("Raw API response:", data);  // چاپ پاسخ خام API
 
+        // بررسی کامل ساختار داده‌ها
         if (data && data.contents) {
           const parsedData = JSON.parse(data.contents);  // پارس کردن داده‌ها
           console.log("Parsed data:", parsedData);  // چاپ داده‌های پارس‌شده
-          
-          // حالا که داده‌ها چاپ شد، باید بررسی کنیم که ساختار دقیقا چطور هست
+
+          // بررسی ساختار داده‌ها
           const price = parsedData?.gold18?.price || 'نامشخص';
           document.getElementById("gold-price").innerText = price + " تومان";
         } else {
