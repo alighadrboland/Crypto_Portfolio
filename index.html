@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>قیمت طلای ۱۸ عیار</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      direction: rtl;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #gold-price {
+      font-size: 2em;
+      color: goldenrod;
+    }
+  </style>
+</head>
+<body>
+  <h1>قیمت لحظه‌ای طلای ۱۸ عیار:</h1>
+  <p id="gold-price">در حال بارگذاری...</p>
+
+  <script>
+    const apiUrl = "https://corsproxy.io/?https://brsapi.ir/Api/User.php?key=FreeTZPrEbgTZzbW2SSGXOlzjlulRFcz";
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(proxyData => {
+        const actualData = JSON.parse(proxyData.contents);
+        const price = actualData?.gold18?.price || 'نامشخص';
+        document.getElementById("gold-price").innerText = price + " تومان";
+      })
+      .catch(error => {
+        console.error("خطا در دریافت قیمت:", error);
+        document.getElementById("gold-price").innerText = "خطا در دریافت قیمت.";
+      });
+  </script>
+</body>
+</html>
