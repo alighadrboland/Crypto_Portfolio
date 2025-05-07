@@ -29,7 +29,7 @@
         const data = await response.json();
 
         // پیدا کردن قیمت طلای ۱۸ عیار
-        const gold18 = data.result.find(item => item.title.includes('طلای 18 عیار'));
+        const gold18 = data.result.find(item => item.title.includes('18K Gold'));
 
         if (gold18) {
           document.getElementById('gold-price').innerText =
